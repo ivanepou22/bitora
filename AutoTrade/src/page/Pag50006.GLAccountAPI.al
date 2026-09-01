@@ -1,0 +1,307 @@
+page 50006 "GL Account API"
+{
+    PageType = API;
+    Caption = 'GL Account';
+    APIPublisher = 'bitora';
+    APIGroup = 'bitora';
+    APIVersion = 'v1.0';
+    EntityName = 'glAccount';
+    EntitySetName = 'glAccount';
+    SourceTable = "G/L Account";
+    DelayedInsert = true;
+
+    layout
+    {
+        area(Content)
+        {
+            repeater(GroupName)
+            {
+                field(no; Rec."No.")
+                {
+                    Caption = 'No.';
+                }
+                field(name; Rec.Name)
+                {
+                    Caption = 'Name';
+                }
+                field(searchName; Rec."Search Name")
+                {
+                    Caption = 'Search Name';
+                }
+                field(incomeBalance; Rec."Income/Balance")
+                {
+                    Caption = 'Income/Balance';
+                }
+                field(accountCategory; Rec."Account Category")
+                {
+                    Caption = 'Account Category';
+                }
+                field(accountSubcategoryDescript; Rec."Account Subcategory Descript.")
+                {
+                    Caption = 'Account Subcategory Descript.';
+                }
+                field(accountSubcategoryEntryNo; Rec."Account Subcategory Entry No.")
+                {
+                    Caption = 'Account Subcategory Entry No.';
+                }
+                field(accountType; Rec."Account Type")
+                {
+                    Caption = 'Account Type';
+                }
+                field(debitCredit; Rec."Debit/Credit")
+                {
+                    Caption = 'Debit/Credit';
+                }
+                field(totaling; Rec.Totaling)
+                {
+                    Caption = 'Totaling';
+                }
+                field(noOfBlankLines; Rec."No. of Blank Lines")
+                {
+                    Caption = 'No. of Blank Lines';
+                }
+                field(newPage; Rec."New Page")
+                {
+                    Caption = 'New Page';
+                }
+                field(balance; Rec.Balance)
+                {
+                    Caption = 'Balance';
+                }
+                field(balanceAtDate; Rec."Balance at Date")
+                {
+                    Caption = 'Balance at Date';
+                }
+                field(addCurrencyBalanceAtDate; Rec."Add.-Currency Balance at Date")
+                {
+                    Caption = 'Add.-Currency Balance at Date';
+                }
+                field(additionalCurrencyBalance; Rec."Additional-Currency Balance")
+                {
+                    Caption = 'Additional-Currency Balance';
+                }
+                field(globalDimension1Code; Rec."Global Dimension 1 Code")
+                {
+                    Caption = 'Global Dimension 1 Code';
+                }
+                field(globalDimension2Code; Rec."Global Dimension 2 Code")
+                {
+                    Caption = 'Global Dimension 2 Code';
+                }
+                field(netChange; Rec."Net Change")
+                {
+                    Caption = 'Net Change';
+                }
+                field(additionalCurrencyNetChange; Rec."Additional-Currency Net Change")
+                {
+                    Caption = 'Additional-Currency Net Change';
+                }
+                field(reconciliationAccount; Rec."Reconciliation Account")
+                {
+                    Caption = 'Reconciliation Account';
+                }
+                field(automaticExtTexts; Rec."Automatic Ext. Texts")
+                {
+                    Caption = 'Automatic Ext. Texts';
+                }
+                field(directPosting; Rec."Direct Posting")
+                {
+                    Caption = 'Direct Posting';
+                }
+                field(blocked; Rec.Blocked)
+                {
+                    Caption = 'Blocked';
+                }
+                field(lastDateModified; Rec."Last Date Modified")
+                {
+                    Caption = 'Last Date Modified';
+                }
+                field(lastModifiedDateTime; Rec."Last Modified Date Time")
+                {
+                    Caption = 'Last Modified Date Time';
+                }
+                field(omitDefaultDescrInJnl; Rec."Omit Default Descr. in Jnl.")
+                {
+                    Caption = 'Omit Default Descr. in Jnl.';
+                }
+                field(genPostingType; Rec."Gen. Posting Type")
+                {
+                    Caption = 'Gen. Posting Type';
+                }
+                field(genBusPostingGroup; Rec."Gen. Bus. Posting Group")
+                {
+                    Caption = 'Gen. Bus. Posting Group';
+                }
+                field(genProdPostingGroup; Rec."Gen. Prod. Posting Group")
+                {
+                    Caption = 'Gen. Prod. Posting Group';
+                }
+                field(vatBusPostingGroup; Rec."VAT Bus. Posting Group")
+                {
+                    Caption = 'VAT Bus. Posting Group';
+                }
+                field(vatProdPostingGroup; Rec."VAT Prod. Posting Group")
+                {
+                    Caption = 'VAT Prod. Posting Group';
+                }
+                field(taxGroupCode; Rec."Tax Group Code")
+                {
+                    Caption = 'Tax Group Code';
+                }
+                field(defaultICPartnerGLAccNo; Rec."Default IC Partner G/L Acc. No")
+                {
+                    Caption = 'Default IC Partner G/L Acc. No';
+                }
+                field(budgetAtDate; Rec."Budget at Date")
+                {
+                    Caption = 'Budget at Date';
+                }
+                field(budgetedAmount; Rec."Budgeted Amount")
+                {
+                    Caption = 'Budgeted Amount';
+                }
+                field(budgetedCreditAmount; Rec."Budgeted Credit Amount")
+                {
+                    Caption = 'Budgeted Credit Amount';
+                }
+                field(budgetedDebitAmount; Rec."Budgeted Debit Amount")
+                {
+                    Caption = 'Budgeted Debit Amount';
+                }
+                field(sourceCurrencyCode; Rec."Source Currency Code")
+                {
+                    Caption = 'Currency Code';
+                }
+                field(sourceCurrencyBalance; Rec."Source Currency Balance")
+                {
+                    Caption = 'Source Currency Balance';
+                }
+                field(sourceCurrencyPosting; Rec."Source Currency Posting")
+                {
+                    Caption = 'Source Currency Posting';
+                }
+                field(sourceCurrencyNetChange; Rec."Source Currency Net Change")
+                {
+                    Caption = 'Source Currency Net Change';
+                }
+                field(sourceCurrencyRevaluation; Rec."Source Currency Revaluation")
+                {
+                    Caption = 'Source Currency Revaluation';
+                }
+                field(sourceCurrBalanceAtDate; Rec."Source Curr. Balance at Date")
+                {
+                    Caption = 'Source Curr. Balance at Date';
+                }
+                field(unrealizedRevaluation; Rec."Unrealized Revaluation")
+                {
+                    Caption = 'Unrealized Revaluation';
+                }
+                field(consolDebitAcc; Rec."Consol. Debit Acc.")
+                {
+                    Caption = 'Consol. Debit Acc.';
+                }
+                field(consolCreditAcc; Rec."Consol. Credit Acc.")
+                {
+                    Caption = 'Consol. Credit Acc.';
+                }
+                field(consolTranslationMethod; Rec."Consol. Translation Method")
+                {
+                    Caption = 'Consol. Translation Method';
+                }
+                field(excludeFromConsolidation; Rec."Exclude From Consolidation")
+                {
+                    Caption = 'Exclude from Consolidation';
+                }
+                field(exchangeRateAdjustment; Rec."Exchange Rate Adjustment")
+                {
+                    Caption = 'Exchange Rate Adjustment';
+                }
+                field(costTypeNo; Rec."Cost Type No.")
+                {
+                    Caption = 'Cost Type No.';
+                }
+                field(addCurrencyCreditAmount; Rec."Add.-Currency Credit Amount")
+                {
+                    Caption = 'Add.-Currency Credit Amount';
+                }
+                field(addCurrencyDebitAmount; Rec."Add.-Currency Debit Amount")
+                {
+                    Caption = 'Add.-Currency Debit Amount';
+                }
+                field(apiAccountType; Rec."API Account Type")
+                {
+                    Caption = 'API Account Type';
+                }
+                field(comment; Rec.Comment)
+                {
+                    Caption = 'Comment';
+                }
+                field(creditAmount; Rec."Credit Amount")
+                {
+                    Caption = 'Credit Amount';
+                }
+                field(debitAmount; Rec."Debit Amount")
+                {
+                    Caption = 'Debit Amount';
+                }
+                field(defaultDeferralTemplateCode; Rec."Default Deferral Template Code")
+                {
+                    Caption = 'Default Deferral Template Code';
+                }
+                field(indentation; Rec.Indentation)
+                {
+                    Caption = 'Indentation';
+                }
+                field(no2; Rec."No. 2")
+                {
+                    Caption = 'No. 2';
+                }
+                field(picture; Rec.Picture)
+                {
+                    Caption = 'Picture';
+                }
+                field(taxAreaCode; Rec."Tax Area Code")
+                {
+                    Caption = 'Tax Area Code';
+                }
+                field(taxLiable; Rec."Tax Liable")
+                {
+                    Caption = 'Tax Liable';
+                }
+                field(vatAmt; Rec."VAT Amt.")
+                {
+                    Caption = 'VAT Amt.';
+                }
+                field(systemCreatedAt; Rec.SystemCreatedAt)
+                {
+                    Caption = 'SystemCreatedAt';
+                }
+                field(systemCreatedBy; Rec.SystemCreatedBy)
+                {
+                    Caption = 'SystemCreatedBy';
+                }
+                field(systemId; Rec.SystemId)
+                {
+                    Caption = 'SystemId';
+                }
+                field(systemModifiedAt; Rec.SystemModifiedAt)
+                {
+                    Caption = 'SystemModifiedAt';
+                }
+                field(systemModifiedBy; Rec.SystemModifiedBy)
+                {
+                    Caption = 'SystemModifiedBy';
+                }
+            }
+        }
+    }
+
+    [ServiceEnabled]
+    [Scope('Cloud')]
+    procedure IndentChartOfAccounts()
+    var
+        IndentChartOfAccounts: Codeunit "G/L Account-Indent";
+    begin
+        IndentChartOfAccounts.Run();
+    end;
+}
