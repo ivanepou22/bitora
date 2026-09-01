@@ -20,9 +20,10 @@ page 50028 "API - Sales Line Discount"
         {
             repeater(GroupName)
             {
-                field(systemId; Rec.SystemId)
+                field(id; Rec.SystemId)
                 {
                     Caption = 'SystemId';
+                    Editable = false;
                 }
                 field(salesType; Rec."Sales Type")
                 {

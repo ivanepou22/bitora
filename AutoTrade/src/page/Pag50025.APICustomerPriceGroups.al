@@ -19,9 +19,10 @@ page 50025 "API - Customer Price Groups"
         {
             repeater(GroupName)
             {
-                field(systemId; Rec.SystemId)
+                field(id; Rec.SystemId)
                 {
                     Caption = 'SystemId';
+                    Editable = false;
                 }
                 field(code; Rec."Code")
                 {

@@ -20,9 +20,10 @@ page 50027 "API - Customer Discount Groups"
         {
             repeater(GroupName)
             {
-                field(systemId; Rec.SystemId)
+                field(id; Rec.SystemId)
                 {
                     Caption = 'SystemId';
+                    Editable = false;
                 }
                 field("code"; Rec."Code")
                 {

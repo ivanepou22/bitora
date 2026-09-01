@@ -19,9 +19,10 @@ page 50026 "API - Sales Prices"
         {
             repeater(GroupName)
             {
-                field(systemId; Rec.SystemId)
+                field(id; Rec.SystemId)
                 {
                     Caption = 'SystemId';
+                    Editable = false;
                 }
                 field(salesType; Rec."Sales Type")
                 {
