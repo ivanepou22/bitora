@@ -9,6 +9,7 @@ page 50016 "Journal Batches API"
     EntitySetName = 'journalBatches';
     SourceTable = "Gen. Journal Batch";
     DelayedInsert = true;
+    ODataKeyFields = SystemId;
 
     layout
     {
@@ -16,6 +17,10 @@ page 50016 "Journal Batches API"
         {
             repeater(GroupName)
             {
+                field(systemId; Rec.SystemId)
+                {
+                    Caption = 'SystemId';
+                }
                 field(journalTemplateName; Rec."Journal Template Name")
                 {
                     Caption = 'Journal Template Name';
