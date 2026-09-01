@@ -114,6 +114,14 @@ page 50017 "API - Customers"
                         RegisterFieldSet(Rec.FieldNo("Phone No."));
                     end;
                 }
+                field(mobilePhoneNo; Rec."Mobile Phone No.")
+                {
+                    Caption = 'Mobile Phone No.';
+                    trigger OnValidate()
+                    begin
+                        RegisterFieldSet(Rec.FieldNo("Mobile Phone No."));
+                    end;
+                }
                 field(email; Rec."E-Mail")
                 {
                     Caption = 'Email';
@@ -177,6 +185,14 @@ page 50017 "API - Customers"
                     trigger OnValidate()
                     begin
                         RegisterFieldSet(Rec.FieldNo("VAT Registration No."));
+                    end;
+                }
+                field(allowLineDisc; Rec."Allow Line Disc.")
+                {
+                    Caption = 'Allow Line Disc.';
+                    trigger OnValidate()
+                    begin
+                        RegisterFieldSet(Rec.FieldNo("Allow Line Disc."));
                     end;
                 }
                 field(pricesIncludingVAT; Rec."Prices Including VAT")
