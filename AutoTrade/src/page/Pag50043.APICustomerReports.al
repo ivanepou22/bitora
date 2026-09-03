@@ -258,7 +258,7 @@ page 50043 "API - Customer Reports"
         Base64: Codeunit "Base64 Convert";
         Customer: Record Customer;
         CustomerRecRef: RecordRef;
-        AgedARReport: Report "Aged Accounts Receivable";
+        AgedARReport: Report "Aged Accounts Receivables";
         AgingBy: Option "Due Date","Posting Date","Document Date";
         HeadingType: Option "Date Interval","Number of Days";
         PeriodLength: DateFormula;
