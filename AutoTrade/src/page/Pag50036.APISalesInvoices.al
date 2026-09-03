@@ -134,6 +134,10 @@ page 50036 "API - Sales Invoices"
             {
                 Caption = 'Prepmt. Pmt. Discount Date';
             }
+            field(dimensionSetID; Rec."Dimension Set ID")
+            {
+                Caption = 'Dimension Set ID';
+            }
             part(salesLines; "API - Sales Lines")
             {
                 EntityName = 'salesLine';

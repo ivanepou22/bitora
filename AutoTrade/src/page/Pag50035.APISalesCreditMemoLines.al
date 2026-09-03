@@ -87,6 +87,30 @@ page 50035 "API - Sales Credit Memo Lines"
             {
                 Caption = 'Shortcut Dimension 1 Code';
             }
+            field(dimensionSetID; Rec."Dimension Set ID")
+            {
+                Caption = 'Dimension Set ID';
+            }
+            field(customerDiscGroup; Rec."Customer Disc. Group")
+            {
+                Caption = 'Customer Disc. Group';
+            }
+            field(customerPriceGroup; Rec."Customer Price Group")
+            {
+                Caption = 'Customer Price Group';
+            }
+            field(billToCustomerNo; Rec."Bill-to Customer No.")
+            {
+                Caption = 'Bill-to Customer No.';
+            }
+            field(sellToCustomerName; Rec."Sell-to Customer Name")
+            {
+                Caption = 'Sell-to Customer Name';
+            }
+            field(sellToCustomerNo; Rec."Sell-to Customer No.")
+            {
+                Caption = 'Sell-to Customer No.';
+            }
             field(shortcutDimension2Code; Rec."Shortcut Dimension 2 Code")
             {
                 Caption = 'Shortcut Dimension 2 Code';

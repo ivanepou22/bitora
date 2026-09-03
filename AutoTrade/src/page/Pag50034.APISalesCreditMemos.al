@@ -139,6 +139,18 @@ page 50034 "API - Sales Credit Memos"
             {
                 Caption = 'Prepmt. Pmt. Discount Date';
             }
+            field(dimensionSetID; Rec."Dimension Set ID")
+            {
+                Caption = 'Dimension Set ID';
+            }
+            field(billToCustomerNo; Rec."Bill-to Customer No.")
+            {
+                Caption = 'Bill-to Customer No.';
+            }
+            field(sellToCustomerName2; Rec."Sell-to Customer Name 2")
+            {
+                Caption = 'Sell-to Customer Name 2';
+            }
             part(salesLines; "API - Sales Credit Memo Lines")
             {
                 EntityName = 'salesCreditMemoLine';

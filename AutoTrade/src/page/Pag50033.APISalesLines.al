@@ -74,6 +74,10 @@ page 50033 "API - Sales Lines"
             {
                 Caption = 'VAT %';
             }
+            field(dimensionSetID; Rec."Dimension Set ID")
+            {
+                Caption = 'Dimension Set ID';
+            }
             field(genBusPostingGroup; Rec."Gen. Bus. Posting Group")
             {
                 Caption = 'Gen. Bus. Posting Group';
@@ -89,6 +93,30 @@ page 50033 "API - Sales Lines"
             field(shortcutDimension2Code; Rec."Shortcut Dimension 2 Code")
             {
                 Caption = 'Shortcut Dimension 2 Code';
+            }
+            field(currencyCode; Rec."Currency Code")
+            {
+                Caption = 'Currency Code';
+            }
+            field(customerDiscGroup; Rec."Customer Disc. Group")
+            {
+                Caption = 'Customer Disc. Group';
+            }
+            field(customerPriceGroup; Rec."Customer Price Group")
+            {
+                Caption = 'Customer Price Group';
+            }
+            field(billToCustomerNo; Rec."Bill-to Customer No.")
+            {
+                Caption = 'Bill-to Customer No.';
+            }
+            field(sellToCustomerName; Rec."Sell-to Customer Name")
+            {
+                Caption = 'Sell-to Customer Name';
+            }
+            field(sellToCustomerNo; Rec."Sell-to Customer No.")
+            {
+                Caption = 'Sell-to Customer No.';
             }
         }
     }
