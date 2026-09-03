@@ -484,6 +484,14 @@ page 50007 "General Ledger Setup API"
             {
                 Caption = 'Vendor Balances Due';
             }
+            field(qrCodeUrl; Rec."QrCode Url")
+            {
+                Caption = 'QrCode Url';
+            }
+            field(qrCodeVerificationURL; Rec."QRCode Verification URL")
+            {
+                Caption = 'QRCode Verification URL';
+            }
         }
     }
 }
