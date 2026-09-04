@@ -135,13 +135,6 @@ page 50037 "API - Sales Quotes"
             {
                 Caption = 'Dimension Set ID';
             }
-            part(dimensionSetLines; "API - Dimension Set Lines")
-            {
-                Caption = 'Dimension Set Lines';
-                EntityName = 'dimensionSetLine';
-                EntitySetName = 'dimensionSetLines';
-                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
-            }
             field(amount; Rec.Amount)
             {
                 Caption = 'Amount';
@@ -177,6 +170,13 @@ page 50037 "API - Sales Quotes"
             field(noPrinted; Rec."No. Printed")
             {
                 Caption = 'No. Printed';
+            }
+            part(dimensionSetLines; "API - Dimension Set Lines")
+            {
+                Caption = 'Dimension Set Lines';
+                EntityName = 'dimensionSetLine';
+                EntitySetName = 'dimensionSetLines';
+                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
             }
             part(pdfDocument; "API - PDF Document")
             {

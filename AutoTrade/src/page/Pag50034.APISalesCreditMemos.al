@@ -151,11 +151,68 @@ page 50034 "API - Sales Credit Memos"
             {
                 Caption = 'Sell-to Customer Name 2';
             }
-            part(salesLines; "API - Sales Credit Memo Lines")
+            field(amount; Rec.Amount)
+            {
+                Caption = 'Amount';
+            }
+            field(amountIncludingVAT; Rec."Amount Including VAT")
+            {
+                Caption = 'Amount Including VAT';
+            }
+            field(amtShipNotInvLCY; Rec."Amt. Ship. Not Inv. (LCY)")
+            {
+                Caption = 'Amount Shipped Not Invoiced (LCY) Incl. VAT';
+            }
+            field(amtShipNotInvLCYBase; Rec."Amt. Ship. Not Inv. (LCY) Base")
+            {
+                Caption = 'Amount Shipped Not Invoiced (LCY)';
+            }
+            field(allowLineDisc; Rec."Allow Line Disc.")
+            {
+                Caption = 'Allow Line Disc.';
+            }
+            field(documentDate; Rec."Document Date")
+            {
+                Caption = 'Document Date';
+            }
+            field(noPrinted; Rec."No. Printed")
+            {
+                Caption = 'No. Printed';
+            }
+            part(dimensionSetLines; "API - Dimension Set Lines")
+            {
+                Caption = 'Dimension Set Lines';
+                EntityName = 'dimensionSetLine';
+                EntitySetName = 'dimensionSetLines';
+                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
+            }
+            part(pdfDocument; "API - PDF Document")
+            {
+                Caption = 'PDF Document';
+                Multiplicity = ZeroOrOne;
+                EntityName = 'pdfDocument';
+                EntitySetName = 'pdfDocument';
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+            }
+            part(salesCreditMemoLines; "API - Sales Credit Memo Lines")
             {
                 EntityName = 'salesCreditMemoLine';
                 EntitySetName = 'salesCreditMemoLines';
                 SubPageLink = "Document No." = field("No."), "Document Type" = field("Document Type");
+            }
+            part(attachments; "API - Attachments")
+            {
+                Caption = 'Attachments';
+                EntityName = 'attachment';
+                EntitySetName = 'attachments';
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+            }
+            part(documentAttachments; "API - Document Attachments")
+            {
+                Caption = 'Document Attachments';
+                EntityName = 'documentAttachment';
+                EntitySetName = 'documentAttachments';
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
             }
         }
 

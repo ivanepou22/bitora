@@ -9,7 +9,7 @@ page 50017 "API - Customers"
     DelayedInsert = true;
     EntityName = 'customer';
     EntitySetName = 'customers';
-    ODataKeyFields = SystemId;
+    ODataKeyFields = "No.";
     PageType = API;
     SourceTable = Customer;
     Extensible = false;

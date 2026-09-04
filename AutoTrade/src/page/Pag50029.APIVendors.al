@@ -17,7 +17,7 @@ page 50029 "API - Vendors"
     DelayedInsert = true;
     EntityName = 'vendor';
     EntitySetName = 'vendors';
-    ODataKeyFields = SystemId;
+    ODataKeyFields = "No.";
     PageType = API;
     SourceTable = Vendor;
     Extensible = false;
