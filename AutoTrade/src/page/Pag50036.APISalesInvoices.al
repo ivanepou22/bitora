@@ -138,11 +138,40 @@ page 50036 "API - Sales Invoices"
             {
                 Caption = 'Dimension Set ID';
             }
+            part(dimensionSetLines; "API - Dimension Set Lines")
+            {
+                Caption = 'Dimension Set Lines';
+                EntityName = 'dimensionSetLine';
+                EntitySetName = 'dimensionSetLines';
+                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
+            }
+            part(pdfDocument; "API - PDF Document")
+            {
+                Caption = 'PDF Document';
+                Multiplicity = ZeroOrOne;
+                EntityName = 'pdfDocument';
+                EntitySetName = 'pdfDocument';
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+            }
             part(salesLines; "API - Sales Lines")
             {
                 EntityName = 'salesLine';
                 EntitySetName = 'salesLines';
                 SubPageLink = "Document No." = field("No."), "Document Type" = filter(Invoice);
+            }
+            part(attachments; "API - Attachments")
+            {
+                Caption = 'Attachments';
+                EntityName = 'attachment';
+                EntitySetName = 'attachments';
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+            }
+            part(documentAttachments; "API - Document Attachments")
+            {
+                Caption = 'Document Attachments';
+                EntityName = 'documentAttachment';
+                EntitySetName = 'documentAttachments';
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
             }
         }
 
