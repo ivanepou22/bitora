@@ -142,6 +142,42 @@ page 50037 "API - Sales Quotes"
                 EntitySetName = 'dimensionSetLines';
                 SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
             }
+            field(amount; Rec.Amount)
+            {
+                Caption = 'Amount';
+            }
+            field(amountIncludingVAT; Rec."Amount Including VAT")
+            {
+                Caption = 'Amount Including VAT';
+            }
+            field(invoiceDiscountAmount; Rec."Invoice Discount Amount")
+            {
+                Caption = 'Invoice Discount Amount';
+            }
+            field(amtShipNotInvLCY; Rec."Amt. Ship. Not Inv. (LCY)")
+            {
+                Caption = 'Amount Shipped Not Invoiced (LCY) Incl. VAT';
+            }
+            field(allowLineDisc; Rec."Allow Line Disc.")
+            {
+                Caption = 'Allow Line Disc.';
+            }
+            field(appliesToDocType; Rec."Applies-to Doc. Type")
+            {
+                Caption = 'Applies-to Doc. Type';
+            }
+            field(appliesToDocNo; Rec."Applies-to Doc. No.")
+            {
+                Caption = 'Applies-to Doc. No.';
+            }
+            field(documentDate; Rec."Document Date")
+            {
+                Caption = 'Document Date';
+            }
+            field(noPrinted; Rec."No. Printed")
+            {
+                Caption = 'No. Printed';
+            }
             part(pdfDocument; "API - PDF Document")
             {
                 Caption = 'PDF Document';

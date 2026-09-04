@@ -138,6 +138,42 @@ page 50036 "API - Sales Invoices"
             {
                 Caption = 'Dimension Set ID';
             }
+            field(amount; Rec.Amount)
+            {
+                Caption = 'Amount';
+            }
+            field(amountIncludingVAT; Rec."Amount Including VAT")
+            {
+                Caption = 'Amount Including VAT';
+            }
+            field(invoiceDiscountAmount; Rec."Invoice Discount Amount")
+            {
+                Caption = 'Invoice Discount Amount';
+            }
+            field(amtShipNotInvLCY; Rec."Amt. Ship. Not Inv. (LCY)")
+            {
+                Caption = 'Amount Shipped Not Invoiced (LCY) Incl. VAT';
+            }
+            field(allowLineDisc; Rec."Allow Line Disc.")
+            {
+                Caption = 'Allow Line Disc.';
+            }
+            field(appliesToDocType; Rec."Applies-to Doc. Type")
+            {
+                Caption = 'Applies-to Doc. Type';
+            }
+            field(appliesToDocNo; Rec."Applies-to Doc. No.")
+            {
+                Caption = 'Applies-to Doc. No.';
+            }
+            field(documentDate; Rec."Document Date")
+            {
+                Caption = 'Document Date';
+            }
+            field(noPrinted; Rec."No. Printed")
+            {
+                Caption = 'No. Printed';
+            }
             part(dimensionSetLines; "API - Dimension Set Lines")
             {
                 Caption = 'Dimension Set Lines';
