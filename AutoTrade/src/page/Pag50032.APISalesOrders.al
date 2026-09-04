@@ -36,7 +36,7 @@ page 50032 "API - Sales Orders"
                 trigger OnValidate()
                 begin
                     Rec.SelltoCustomerNoOnAfterValidate(Rec, xRec);
-                    CurrPage.Update();
+                    // CurrPage.Update();
                     if SellToCustomer."No." <> '' then begin
                         if SellToCustomer."No." <> Rec."Sell-to Customer No." then
                             Error(SellToCustomerValuesDontMatchErr);
@@ -597,16 +597,6 @@ page 50032 "API - Sales Orders"
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
         Rec.Validate("Document Type");
-        CheckSellToCustomerSpecified();
-
-        // GraphMgtSalesOrderBuffer.PropagateOnInsert(Rec, TempFieldBuffer);
-        SetDates();
-
-        UpdateDiscount();
-
-        SetCalculatedFields();
-
-        exit(false);
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -614,7 +604,7 @@ page 50032 "API - Sales Orders"
         if xRec.SystemId <> Rec.SystemId then
             Error(CannotChangeIDErr);
 
-        // GraphMgtSalesOrderBuffer.PropagateOnModify(Rec, TempFieldBuffer);
+        // // GraphMgtSalesOrderBuffer.PropagateOnModify(Rec, TempFieldBuffer);
         UpdateDiscount();
 
         SetCalculatedFields();
