@@ -418,6 +418,126 @@ page 50017 "API - Customers"
                         RegisterFieldSet(Rec.FieldNo(Blocked));
                     end;
                 }
+                field(globalDimension1Code; Rec."Global Dimension 1 Code")
+                {
+                    Caption = 'Global Dimension 1 Code';
+                }
+                field(globalDimension2Code; Rec."Global Dimension 2 Code")
+                {
+                    Caption = 'Global Dimension 2 Code';
+                }
+                field(outstandingInvoices; Rec."Outstanding Invoices")
+                {
+                    Caption = 'Outstanding Invoices';
+                }
+                field(outstandingInvoicesLCY; Rec."Outstanding Invoices (LCY)")
+                {
+                    Caption = 'Outstanding Invoices (LCY)';
+                }
+                field(outstandingOrders; Rec."Outstanding Orders")
+                {
+                    Caption = 'Outstanding Orders';
+                }
+                field(outstandingOrdersLCY; Rec."Outstanding Orders (LCY)")
+                {
+                    Caption = 'Outstanding Orders (LCY)';
+                }
+                field(noOfCreditMemos; Rec."No. of Credit Memos")
+                {
+                    Caption = 'No. of Credit Memos';
+                }
+                field(noOfPstdCreditMemos; Rec."No. of Pstd. Credit Memos")
+                {
+                    Caption = 'No. of Pstd. Credit Memos';
+                }
+                field(balance; Rec.Balance)
+                {
+                    Caption = 'Balance';
+                }
+                field(amount; Rec.Amount)
+                {
+                    Caption = 'Amount';
+                }
+                field(balanceLCY; Rec."Balance (LCY)")
+                {
+                    Caption = 'Balance (LCY)';
+                }
+                field(balanceDueLCY; Rec."Balance Due (LCY)")
+                {
+                    Caption = 'Overdue Balance (LCY)';
+                }
+                field(crMemoAmounts; Rec."Cr. Memo Amounts")
+                {
+                    Caption = 'Cr. Memo Amounts';
+                }
+                field(crMemoAmountsLCY; Rec."Cr. Memo Amounts (LCY)")
+                {
+                    Caption = 'Cr. Memo Amounts (LCY)';
+                }
+                field(invAmountsLCY; Rec."Inv. Amounts (LCY)")
+                {
+                    Caption = 'Inv. Amounts (LCY)';
+                }
+                field(invDiscountsLCY; Rec."Inv. Discounts (LCY)")
+                {
+                    Caption = 'Inv. Discounts (LCY)';
+                }
+                field(invoiceAmounts; Rec."Invoice Amounts")
+                {
+                    Caption = 'Invoice Amounts';
+                }
+                field(invoiceCopies; Rec."Invoice Copies")
+                {
+                    Caption = 'Invoice Copies';
+                }
+                field(netChange; Rec."Net Change")
+                {
+                    Caption = 'Net Change';
+                }
+                field(netChangeLCY; Rec."Net Change (LCY)")
+                {
+                    Caption = 'Net Change (LCY)';
+                }
+                field(noOfPstdInvoices; Rec."No. of Pstd. Invoices")
+                {
+                    Caption = 'No. of Pstd. Invoices';
+                }
+                field(noOfPstdReturnReceipts; Rec."No. of Pstd. Return Receipts")
+                {
+                    Caption = 'No. of Pstd. Return Receipts';
+                }
+                field(noOfPstdShipments; Rec."No. of Pstd. Shipments")
+                {
+                    Caption = 'No. of Pstd. Shipments';
+                }
+                field(noOfInvoices; Rec."No. of Invoices")
+                {
+                    Caption = 'No. of Invoices';
+                }
+                field(noOfOrders; Rec."No. of Orders")
+                {
+                    Caption = 'No. of Orders';
+                }
+                field(noOfQuotes; Rec."No. of Quotes")
+                {
+                    Caption = 'No. of Quotes';
+                }
+                field(profitLCY; Rec."Profit (LCY)")
+                {
+                    Caption = 'Profit (LCY)';
+                }
+                field(refunds; Rec.Refunds)
+                {
+                    Caption = 'Refunds';
+                }
+                field(refundsLCY; Rec."Refunds (LCY)")
+                {
+                    Caption = 'Refunds (LCY)';
+                }
+                field(salesLCY; Rec."Sales (LCY)")
+                {
+                    Caption = 'Sales (LCY)';
+                }
                 field(lastModifiedDateTime; Rec.SystemModifiedAt)
                 {
                     Caption = 'Last Modified Date';
@@ -466,6 +586,27 @@ page 50017 "API - Customers"
                     EntityName = 'documentAttachment';
                     EntitySetName = 'documentAttachments';
                     SubPageLink = "Document Id" = field(SystemId), "Document Type" = const(Customer);
+                }
+                part(postedSalesCreditMemos; "API - Posted Sales Cr. Memos")
+                {
+                    Caption = 'Posted Sales Credit Memos';
+                    EntityName = 'postedSalesCreditMemo';
+                    EntitySetName = 'postedSalesCreditMemos';
+                    SubPageLink = "Sell-to Customer No." = field("No.");
+                }
+                part(postedSalesInvoices; "API - Posted Sales Invoices")
+                {
+                    Caption = 'Posted Sales Invoices';
+                    EntityName = 'PostedSalesInvoice';
+                    EntitySetName = 'PostedSalesInvoices';
+                    SubPageLink = "Sell-to Customer No." = field("No.");
+                }
+                part(customerledgers; "API - Customer Ledgers")
+                {
+                    Caption = 'Customer Ledgers Entries';
+                    EntityName = 'customerledgers';
+                    EntitySetName = 'customerledgers';
+                    SubPageLink = "Sell-to Customer No." = field("No.");
                 }
             }
         }

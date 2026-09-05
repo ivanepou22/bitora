@@ -9,7 +9,7 @@ page 50040 "API - Posted Sales Cr. Memos"
     EntityName = 'postedSalesCreditMemo';
     EntitySetName = 'postedSalesCreditMemos';
     SourceTable = "Sales Cr.Memo Header";
-    ODataKeyFields = "No.", "Sell-to Customer No.";
+    ODataKeyFields = "No.";
     Editable = false;
     InsertAllowed = false;
     ModifyAllowed = false;
