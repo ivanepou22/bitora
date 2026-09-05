@@ -486,10 +486,6 @@ page 50017 "API - Customers"
                 {
                     Caption = 'Invoice Amounts';
                 }
-                field(invoiceCopies; Rec."Invoice Copies")
-                {
-                    Caption = 'Invoice Copies';
-                }
                 field(netChange; Rec."Net Change")
                 {
                     Caption = 'Net Change';
