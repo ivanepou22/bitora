@@ -199,6 +199,10 @@ page 50058 "API - Purchase Quotes"
                 {
                     Caption = 'Creditor No.';
                 }
+                field(locationCode; Rec."Location Code")
+                {
+                    Caption = 'Location Code';
+                }
                 field(onHold; Rec."On Hold")
                 {
                     Caption = 'On Hold';

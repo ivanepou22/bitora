@@ -235,6 +235,10 @@ page 50057 "API - Purchase Credit Memos"
                 {
                     Caption = 'Prepayment Due Date';
                 }
+                field(locationCode; Rec."Location Code")
+                {
+                    Caption = 'Location Code';
+                }
                 field(prepmtPaymentDiscount; Rec."Prepmt. Payment Discount %")
                 {
                     Caption = 'Prepmt. Payment Discount %';

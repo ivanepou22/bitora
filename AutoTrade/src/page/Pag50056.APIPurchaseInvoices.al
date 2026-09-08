@@ -247,6 +247,10 @@ page 50056 "API - Purchase Invoices"
                 {
                     Caption = 'Prepmt. Cr. Memo No.';
                 }
+                field(locationCode; Rec."Location Code")
+                {
+                    Caption = 'Location Code';
+                }
                 part(purchaseLines; "API - Purchase Lines")
                 {
                     Caption = 'Purchase Lines';
