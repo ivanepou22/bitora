@@ -179,7 +179,7 @@ page 50036 "API - Sales Invoices"
                 Caption = 'Dimension Set Lines';
                 EntityName = 'dimensionSetLine';
                 EntitySetName = 'dimensionSetLines';
-                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
+                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Invoice");
             }
             part(pdfDocument; "API - PDF Document")
             {
@@ -187,7 +187,7 @@ page 50036 "API - Sales Invoices"
                 Multiplicity = ZeroOrOne;
                 EntityName = 'pdfDocument';
                 EntitySetName = 'pdfDocument';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Invoice");
             }
             part(salesLines; "API - Sales Lines")
             {
@@ -200,14 +200,14 @@ page 50036 "API - Sales Invoices"
                 Caption = 'Attachments';
                 EntityName = 'attachment';
                 EntitySetName = 'attachments';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Invoice");
             }
             part(documentAttachments; "API - Document Attachments")
             {
                 Caption = 'Document Attachments';
                 EntityName = 'documentAttachment';
                 EntitySetName = 'documentAttachments';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Invoice");
             }
         }
 

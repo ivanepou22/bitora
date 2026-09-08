@@ -184,7 +184,7 @@ page 50034 "API - Sales Credit Memos"
                 Caption = 'Dimension Set Lines';
                 EntityName = 'dimensionSetLine';
                 EntitySetName = 'dimensionSetLines';
-                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
+                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Credit Memo");
             }
             part(pdfDocument; "API - PDF Document")
             {
@@ -192,27 +192,27 @@ page 50034 "API - Sales Credit Memos"
                 Multiplicity = ZeroOrOne;
                 EntityName = 'pdfDocument';
                 EntitySetName = 'pdfDocument';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Credit Memo");
             }
             part(salesCreditMemoLines; "API - Sales Credit Memo Lines")
             {
                 EntityName = 'salesCreditMemoLine';
                 EntitySetName = 'salesCreditMemoLines';
-                SubPageLink = "Document No." = field("No."), "Document Type" = field("Document Type");
+                SubPageLink = "Document No." = field("No."), "Document Type" = filter("Credit Memo");
             }
             part(attachments; "API - Attachments")
             {
                 Caption = 'Attachments';
                 EntityName = 'attachment';
                 EntitySetName = 'attachments';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Credit Memo");
             }
             part(documentAttachments; "API - Document Attachments")
             {
                 Caption = 'Document Attachments';
                 EntityName = 'documentAttachment';
                 EntitySetName = 'documentAttachments';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Credit Memo");
             }
         }
 

@@ -176,7 +176,7 @@ page 50037 "API - Sales Quotes"
                 Caption = 'Dimension Set Lines';
                 EntityName = 'dimensionSetLine';
                 EntitySetName = 'dimensionSetLines';
-                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
+                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Quote");
             }
             part(pdfDocument; "API - PDF Document")
             {
@@ -184,7 +184,7 @@ page 50037 "API - Sales Quotes"
                 Multiplicity = ZeroOrOne;
                 EntityName = 'pdfDocument';
                 EntitySetName = 'pdfDocument';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Quote");
             }
             part(salesLines; "API - Sales Lines")
             {
@@ -197,18 +197,53 @@ page 50037 "API - Sales Quotes"
                 Caption = 'Attachments';
                 EntityName = 'attachment';
                 EntitySetName = 'attachments';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Quote");
             }
             part(documentAttachments; "API - Document Attachments")
             {
                 Caption = 'Document Attachments';
                 EntityName = 'documentAttachment';
                 EntitySetName = 'documentAttachments';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Quote");
             }
         }
 
     }
+
+
+    var
+        TempFieldBuffer: Record "Field Buffer" temporary;
+        SellToCustomer: Record "Customer";
+        BillToCustomer: Record "Customer";
+        Currency: Record "Currency";
+        PaymentTerms: Record "Payment Terms";
+        ShipmentMethod: Record "Shipment Method";
+        GraphMgtGeneralTools: Codeunit "Graph Mgt - General Tools";
+        LCYCurrencyCode: Code[10];
+        CurrencyCodeTxt: Text;
+        CouldNotFindSellToCustomerErr: Label 'The sell-to customer cannot be found.';
+        CouldNotFindBillToCustomerErr: Label 'The bill-to customer cannot be found.';
+        CannotChangeIDErr: Label 'The "id" cannot be changed.', Comment = 'id is a field name and should not be translated.';
+        SellToCustomerNotProvidedErr: Label 'A "customerNumber" or a "customerId" must be provided.', Comment = 'customerNumber and customerId are field names and should not be translated.';
+        SellToCustomerValuesDontMatchErr: Label 'The sell-to customer values do not match to a specific Customer.';
+        BillToCustomerValuesDontMatchErr: Label 'The bill-to customer values do not match to a specific Customer.';
+        SalesQuotePermissionsErr: Label 'You do not have permissions to read Sales Quotes.';
+        CurrencyValuesDontMatchErr: Label 'The currency values do not match to a specific Currency.';
+        CurrencyIdDoesNotMatchACurrencyErr: Label 'The "currencyId" does not match to a Currency.', Comment = 'currencyId is a field name and should not be translated.';
+        CurrencyCodeDoesNotMatchACurrencyErr: Label 'The "currencyCode" does not match to a Currency.', Comment = 'currencyCode is a field name and should not be translated.';
+        PaymentTermsIdDoesNotMatchAPaymentTermsErr: Label 'The "paymentTermsId" does not match to a Payment Terms.', Comment = 'paymentTermsId is a field name and should not be translated.';
+        ShipmentMethodIdDoesNotMatchAShipmentMethodErr: Label 'The "shipmentMethodId" does not match to a Shipment Method.', Comment = 'shipmentMethodId is a field name and should not be translated.';
+        DiscountAmountSet: Boolean;
+        InvoiceDiscountAmount: Decimal;
+        BlankGUID: Guid;
+        DocumentDateSet: Boolean;
+        DocumentDateVar: Date;
+        PostingDateSet: Boolean;
+        PostingDateVar: Date;
+        DueDateSet: Boolean;
+        DueDateVar: Date;
+        CannotFindQuoteErr: Label 'The quote cannot be found.';
+        HasWritePermission: Boolean;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
@@ -239,5 +274,111 @@ page 50037 "API - Sales Quotes"
 
         TempBlob.CreateInStream(InS);
         exit(Base64.ToBase64(InS));
+    end;
+
+    local procedure SetCalculatedFields()
+    begin
+        Rec.LoadFields("Currency Code");
+        CurrencyCodeTxt := GraphMgtGeneralTools.TranslateNAVCurrencyCodeToCurrencyCode(LCYCurrencyCode, Rec."Currency Code");
+    end;
+
+    local procedure ClearCalculatedFields()
+    begin
+        Clear(DiscountAmountSet);
+        Clear(InvoiceDiscountAmount);
+
+        TempFieldBuffer.DeleteAll();
+    end;
+
+    local procedure RegisterFieldSet(FieldNo: Integer)
+    var
+        LastOrderNo: Integer;
+    begin
+        LastOrderNo := 1;
+        if TempFieldBuffer.FindLast() then
+            LastOrderNo := TempFieldBuffer.Order + 1;
+
+        Clear(TempFieldBuffer);
+        TempFieldBuffer.Order := LastOrderNo;
+        TempFieldBuffer."Table ID" := Database::"Sales Quote Entity Buffer";
+        TempFieldBuffer."Field ID" := FieldNo;
+        TempFieldBuffer.Insert();
+    end;
+
+
+
+    local procedure CheckPermissions()
+    var
+        SalesHeader: Record "Sales Header";
+    begin
+        SalesHeader.SetRange("Document Type", SalesHeader."Document Type"::Quote);
+        if not SalesHeader.ReadPermission() then
+            Error(SalesQuotePermissionsErr);
+
+        HasWritePermission := SalesHeader.WritePermission();
+    end;
+
+    local procedure GetQuote(var SalesHeader: Record "Sales Header")
+    begin
+        if not SalesHeader.GetBySystemId(Rec.SystemId) then
+            Error(CannotFindQuoteErr);
+    end;
+
+    local procedure SetActionResponse(var ActionContext: WebServiceActionContext; var SalesHeader: Record "Sales Header")
+    begin
+        ActionContext.SetObjectType(ObjectType::Page);
+        case SalesHeader."Document Type" of
+            SalesHeader."Document Type"::Invoice:
+                ActionContext.SetObjectId(Page::"API - Sales Invoices");
+            SalesHeader."Document Type"::Order:
+                ActionContext.SetObjectId(Page::"API - Sales Orders");
+            SalesHeader."Document Type"::Quote:
+                ActionContext.SetObjectId(Page::"API - Sales Quotes");
+        end;
+        ActionContext.AddEntityKey(Rec.FieldNo(SystemId), SalesHeader.SystemId);
+        ActionContext.SetResultCode(WebServiceActionResultCode::Deleted);
+    end;
+
+    [ServiceEnabled]
+    [Caption('Converts the sales quote directly into a sales invoice')]
+    [Scope('Cloud')]
+    procedure MakeInvoice(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
+        SalesQuoteToInvoice: Codeunit "Sales-Quote to Invoice";
+    begin
+        GetQuote(SalesHeader);
+        SalesHeader.SETRECFILTER();
+        SalesQuoteToInvoice.RUN(SalesHeader);
+        SalesQuoteToInvoice.GetSalesInvoiceHeader(SalesHeader);
+        SetActionResponse(ActionContext, SalesHeader);
+    end;
+
+    [ServiceEnabled]
+    [Caption('Converts the sales quote into a sales order for fulfillment')]
+    [Scope('Cloud')]
+    procedure MakeOrder(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
+        SalesQuoteToOrder: Codeunit "Sales-Quote to Order";
+    begin
+        GetQuote(SalesHeader);
+        SalesHeader.SETRECFILTER();
+        SalesQuoteToOrder.RUN(SalesHeader);
+        SalesQuoteToOrder.GetSalesOrderHeader(SalesHeader);
+        SetActionResponse(ActionContext, SalesHeader);
+    end;
+
+    [ServiceEnabled]
+    [Caption('Sends the sales quote document to the customer via email')]
+    [Scope('Cloud')]
+    procedure Send(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
+        APIV2SendSalesDocument: Codeunit "API - Send Sales Document";
+    begin
+        GetQuote(SalesHeader);
+        APIV2SendSalesDocument.SendQuote(SalesHeader);
+        SetActionResponse(ActionContext, SalesHeader);
     end;
 }

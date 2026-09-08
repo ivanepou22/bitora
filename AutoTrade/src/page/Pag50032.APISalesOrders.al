@@ -793,14 +793,10 @@ page 50032 "API - Sales Orders"
     var
         SalesHeader: Record "Sales Header";
         SalesInvoiceHeader: Record "Sales Invoice Header";
-        SalesInvoiceAggregator: Codeunit "Sales Invoice Aggregator";
         Invoiced: Boolean;
     begin
         GetOrder(SalesHeader);
         Invoiced := PostWithShipAndInvoice(SalesHeader, SalesInvoiceHeader);
-        if Invoiced then
-            SetActionResponse(ActionContext, SalesInvoiceAggregator.GetSalesInvoiceHeaderId(SalesInvoiceHeader), Page::"API - Sales Invoices", WebServiceActionResultCode::Deleted)
-        else
-            SetActionResponse(ActionContext, SalesHeader.SystemId, Page::"API - Sales Orders", WebServiceActionResultCode::Updated);
+        SetActionResponse(ActionContext, SalesHeader.SystemId, Page::"API - Sales Orders", WebServiceActionResultCode::Updated);
     end;
 }

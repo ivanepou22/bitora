@@ -1,4 +1,4 @@
-pageextension 50003 MyExtension extends "Accounting Periods"
+pageextension 50003 MyExtension extends "Purchase Order Subform"
 {
     layout
     {
