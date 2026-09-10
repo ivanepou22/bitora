@@ -604,7 +604,6 @@ page 50032 "API - Sales Orders"
         if xRec.SystemId <> Rec.SystemId then
             Error(CannotChangeIDErr);
 
-        // // GraphMgtSalesOrderBuffer.PropagateOnModify(Rec, TempFieldBuffer);
         UpdateDiscount();
 
         SetCalculatedFields();
@@ -722,7 +721,6 @@ page 50032 "API - Sales Orders"
         SalesCalcDiscountByType: Codeunit "Sales - Calc Discount By Type";
     begin
         if not DiscountAmountSet then begin
-            // GraphMgtSalesOrderBuffer.RedistributeInvoiceDiscounts(Rec);
             exit;
         end;
 
@@ -730,32 +728,54 @@ page 50032 "API - Sales Orders"
         SalesCalcDiscountByType.ApplyInvDiscBasedOnAmt(InvoiceDiscountAmount, SalesHeader);
     end;
 
-    local procedure SetDates()
-    begin
-        if not (DocumentDateSet or PostingDateSet) then
-            exit;
-
-        TempFieldBuffer.Reset();
-        TempFieldBuffer.DeleteAll();
-
-        if DocumentDateSet then begin
-            Rec."Document Date" := DocumentDateVar;
-            RegisterFieldSet(Rec.FieldNo("Document Date"));
-        end;
-
-        if PostingDateSet then begin
-            Rec."Posting Date" := PostingDateVar;
-            RegisterFieldSet(Rec.FieldNo("Posting Date"));
-        end;
-
-        // GraphMgtSalesOrderBuffer.PropagateOnModify(Rec, TempFieldBuffer);
-        Rec.Find();
-    end;
-
     local procedure GetOrder(var SalesHeader: Record "Sales Header")
     begin
         if not SalesHeader.GetBySystemId(Rec.SystemId) then
             Error(CannotFindOrderErr);
+    end;
+
+    local procedure SetActionResponse(var ActionContext: WebServiceActionContext; DocumentId: Guid; ObjectId: Integer; ResultCode: WebServiceActionResultCode)
+    begin
+        ActionContext.SetObjectType(ObjectType::Page);
+        ActionContext.SetObjectId(ObjectId);
+        ActionContext.AddEntityKey(Rec.FieldNo(SystemId), DocumentId);
+        ActionContext.SetResultCode(ResultCode);
+    end;
+
+    local procedure PostWithShip(var SalesHeader: Record "Sales Header"): Boolean
+    var
+        LinesInstructionMgt: Codeunit "Lines Instruction Mgt.";
+    begin
+        APIV2SendSalesDocument.CheckDocumentIfNoItemsExists(SalesHeader);
+        LinesInstructionMgt.SalesCheckAllLinesHaveQuantityAssigned(SalesHeader);
+
+        SalesHeader.Ship := true;
+        SalesHeader.Invoice := false;
+        SalesHeader.SendToPosting(Codeunit::"Sales-Post");
+        exit(true);
+    end;
+
+    local procedure PostWithInvoice(var SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header"): Boolean
+    var
+        LinesInstructionMgt: Codeunit "Lines Instruction Mgt.";
+        OrderNo: Code[20];
+        OrderNoSeries: Code[20];
+    begin
+        APIV2SendSalesDocument.CheckDocumentIfNoItemsExists(SalesHeader);
+        LinesInstructionMgt.SalesCheckAllLinesHaveQuantityAssigned(SalesHeader);
+
+        OrderNo := SalesHeader."No.";
+        OrderNoSeries := SalesHeader."No. Series";
+
+        SalesHeader.Ship := false;
+        SalesHeader.Invoice := true;
+        SalesHeader.SendToPosting(Codeunit::"Sales-Post");
+
+        SalesInvoiceHeader.SetCurrentKey("Order No.");
+        SalesInvoiceHeader.SetRange("Pre-Assigned No. Series", '');
+        SalesInvoiceHeader.SetRange("Order No. Series", OrderNoSeries);
+        SalesInvoiceHeader.SetRange("Order No.", OrderNo);
+        exit(SalesInvoiceHeader.FindFirst());
     end;
 
     local procedure PostWithShipAndInvoice(var SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header"): Boolean
@@ -766,11 +786,14 @@ page 50032 "API - Sales Orders"
     begin
         APIV2SendSalesDocument.CheckDocumentIfNoItemsExists(SalesHeader);
         LinesInstructionMgt.SalesCheckAllLinesHaveQuantityAssigned(SalesHeader);
+
         OrderNo := SalesHeader."No.";
         OrderNoSeries := SalesHeader."No. Series";
+
         SalesHeader.Ship := true;
         SalesHeader.Invoice := true;
         SalesHeader.SendToPosting(Codeunit::"Sales-Post");
+
         SalesInvoiceHeader.SetCurrentKey("Order No.");
         SalesInvoiceHeader.SetRange("Pre-Assigned No. Series", '');
         SalesInvoiceHeader.SetRange("Order No. Series", OrderNoSeries);
@@ -778,12 +801,34 @@ page 50032 "API - Sales Orders"
         exit(SalesInvoiceHeader.FindFirst());
     end;
 
-    local procedure SetActionResponse(var ActionContext: WebServiceActionContext; DocumentId: Guid; ObjectId: Integer; ResultCode: WebServiceActionResultCode)
+    [ServiceEnabled]
+    [Caption('Ships the sales order (creates posted sales shipment)')]
+    [Scope('Cloud')]
+    procedure Ship(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
     begin
-        ActionContext.SetObjectType(ObjectType::Page);
-        ActionContext.SetObjectId(ObjectId);
-        ActionContext.AddEntityKey(Rec.FieldNo(SystemId), DocumentId);
-        ActionContext.SetResultCode(ResultCode);
+        GetOrder(SalesHeader);
+        PostWithShip(SalesHeader);
+        SetActionResponse(ActionContext, SalesHeader.SystemId, Page::"API - Sales Orders", WebServiceActionResultCode::Updated);
+    end;
+
+    [ServiceEnabled]
+    [Caption('Invoices the sales order (creates posted sales invoice)')]
+    [Scope('Cloud')]
+    procedure Invoice(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
+        SalesInvoiceHeader: Record "Sales Invoice Header";
+        Invoiced: Boolean;
+    begin
+        GetOrder(SalesHeader);
+        Invoiced := PostWithInvoice(SalesHeader, SalesInvoiceHeader);
+
+        if Invoiced then
+            SetActionResponse(ActionContext, SalesHeader.SystemId, Page::"API - Sales Orders", WebServiceActionResultCode::Updated)
+        else
+            SetActionResponse(ActionContext, SalesHeader.SystemId, Page::"API - Sales Orders", WebServiceActionResultCode::Updated);
     end;
 
     [ServiceEnabled]
@@ -797,6 +842,11 @@ page 50032 "API - Sales Orders"
     begin
         GetOrder(SalesHeader);
         Invoiced := PostWithShipAndInvoice(SalesHeader, SalesInvoiceHeader);
-        SetActionResponse(ActionContext, SalesHeader.SystemId, Page::"API - Sales Orders", WebServiceActionResultCode::Updated);
+
+        if Invoiced then
+            SetActionResponse(ActionContext, SalesHeader.SystemId, Page::"API - Sales Orders", WebServiceActionResultCode::Updated)
+        else
+            SetActionResponse(ActionContext, SalesHeader.SystemId, Page::"API - Sales Orders", WebServiceActionResultCode::Updated);
     end;
+
 }

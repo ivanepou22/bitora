@@ -9,7 +9,6 @@ page 50054 "API - Purchase Lines"
     EntityCaption = 'Purchase Line';
     EntitySetCaption = 'Purchase Lines';
     SourceTable = "Purchase Line";
-    SourceTableView = WHERE("Document Type" = CONST(Order));
     DelayedInsert = true;
     InsertAllowed = true;
     ModifyAllowed = true;
