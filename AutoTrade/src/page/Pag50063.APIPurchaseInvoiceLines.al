@@ -9,6 +9,7 @@ page 50063 "API - Purchase Invoice Lines"
     EntityCaption = 'Purchase Invoice Line';
     EntitySetCaption = 'Purchase Invoice Lines';
     SourceTable = "Purchase Line";
+    SourceTableView = SORTING("Document Type", "Document No.", "Line No.") WHERE("Document Type" = const(Invoice));
     DelayedInsert = true;
     InsertAllowed = true;
     ModifyAllowed = true;
@@ -22,6 +23,10 @@ page 50063 "API - Purchase Invoice Lines"
         {
             repeater(GroupName)
             {
+                field(systemId; Rec.SystemId)
+                {
+                    Caption = 'System Id';
+                }
                 field(documentType; Rec."Document Type")
                 {
                     Caption = 'Document Type';
@@ -257,6 +262,14 @@ page 50063 "API - Purchase Invoice Lines"
                     begin
                         Rec.ValidateShortcutDimCode(8, ShortcutDimCode[8]);
                     end;
+                }
+                field(SystemCreatedAt; Rec.SystemCreatedAt)
+                {
+                    ApplicationArea = All;
+                }
+                field(SystemModifiedBy; Rec.SystemModifiedBy)
+                {
+                    ApplicationArea = All;
                 }
                 part(dimensionSetLines; "API - Dimension Set Lines")
                 {

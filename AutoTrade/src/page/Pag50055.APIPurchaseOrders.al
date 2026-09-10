@@ -300,19 +300,132 @@ page 50055 "API - Purchase Orders"
             Error(CannotFindOrderErr);
     end;
 
-    local procedure PostInvoice(var PurchaseHeader: Record "Purchase Header"; var PurchInvHeader: Record "Purch. Inv. Header"): Boolean
+    // local procedure PostInvoice(var PurchaseHeader: Record "Purchase Header"; var PurchInvHeader: Record "Purch. Inv. Header"): Boolean
+    // var
+    //     LinesInstructionMgt: Codeunit "Lines Instruction Mgt.";
+    //     OrderNo: Code[20];
+    //     OrderNoSeries: Code[20];
+    // begin
+    //     LinesInstructionMgt.PurchaseCheckAllLinesHaveQuantityAssigned(PurchaseHeader);
+    //     OrderNo := PurchaseHeader."No.";
+    //     OrderNoSeries := PurchaseHeader."No. Series";
+    //     PurchaseHeader.Receive := true;
+    //     PurchaseHeader.Invoice := true;
+    //     PurchaseHeader.SendToPosting(Codeunit::"Purch.-Post");
+    //     Commit(); // Purch.-Post does not always commit latest purchase invoice header
+    //     PurchInvHeader.SetCurrentKey("Order No.");
+    //     PurchInvHeader.SetRange("Order No.", OrderNo);
+    //     PurchInvHeader.SetRange("Order No. Series", OrderNoSeries);
+    //     PurchInvHeader.SetRange("Pre-Assigned No.", '');
+    //     exit(PurchInvHeader.FindFirst());
+    // end;
+
+    // local procedure SetActionResponse(var ActionContext: WebServiceActionContext; DocumentId: Guid; ObjectId: Integer; ResultCode: WebServiceActionResultCode)
+    // begin
+    //     ActionContext.SetObjectType(ObjectType::Page);
+    //     ActionContext.SetObjectId(ObjectId);
+    //     ActionContext.AddEntityKey(Rec.FieldNo(SystemId), DocumentId);
+    //     ActionContext.SetResultCode(ResultCode);
+    // end;
+
+    [ServiceEnabled]
+    [Caption('Receives all items on the purchase order')]
+    [Scope('Cloud')]
+    procedure Receive(var ActionContext: WebServiceActionContext)
+    var
+        PurchaseHeader: Record "Purchase Header";
+        PurchRcptHeader: Record "Purch. Rcpt. Header";
+    begin
+        GetPurchaseHeader(PurchaseHeader);
+        PostDocument(PurchaseHeader, true, false);
+
+        PurchRcptHeader.SetCurrentKey("Order No.");
+        PurchRcptHeader.SetRange("Order No.", PurchaseHeader."No.");
+        PurchRcptHeader.SetRange("Order No. Series", PurchaseHeader."No. Series");
+        if PurchRcptHeader.FindLast() then
+            SetActionResponse(ActionContext, PurchRcptHeader.SystemId, Page::"Posted Purchase Receipt", WebServiceActionResultCode::Created)
+        else
+            SetActionResponse(ActionContext, PurchaseHeader.SystemId, Page::"API - Purchase Orders", WebServiceActionResultCode::Updated);
+    end;
+
+    [ServiceEnabled]
+    [Caption('Invoices already received items on the purchase order and creates a posted purchase invoice')]
+    [Scope('Cloud')]
+    procedure Invoice(var ActionContext: WebServiceActionContext)
+    var
+        PurchaseHeader: Record "Purchase Header";
+        PurchInvHeader: Record "Purch. Inv. Header";
+        Invoiced: Boolean;
+    begin
+        GetPurchaseHeader(PurchaseHeader);
+        Invoiced := PostDocument(PurchaseHeader, false, true);
+
+        if Invoiced then begin
+            PurchInvHeader.SetCurrentKey("Order No.");
+            PurchInvHeader.SetRange("Order No.", PurchaseHeader."No.");
+            PurchInvHeader.SetRange("Order No. Series", PurchaseHeader."No. Series");
+            PurchInvHeader.SetRange("Pre-Assigned No.", '');
+            if PurchInvHeader.FindFirst() then
+                SetActionResponse(ActionContext, PurchInvHeader.SystemId, Page::"Posted Purchase Invoice", WebServiceActionResultCode::Deleted)
+            else
+                SetActionResponse(ActionContext, PurchaseHeader.SystemId, Page::"API - Purchase Orders", WebServiceActionResultCode::Updated);
+        end else
+            SetActionResponse(ActionContext, PurchaseHeader.SystemId, Page::"API - Purchase Orders", WebServiceActionResultCode::Updated);
+    end;
+
+    [ServiceEnabled]
+    [Caption('Receives all items on the purchase order and creates a posted purchase invoice')]
+    [Scope('Cloud')]
+    procedure ReceiveAndInvoice(var ActionContext: WebServiceActionContext)
+    var
+        PurchaseHeader: Record "Purchase Header";
+        PurchInvHeader: Record "Purch. Inv. Header";
+        Invoiced: Boolean;
+    begin
+        GetPurchaseHeader(PurchaseHeader);
+        Invoiced := PostDocument(PurchaseHeader, true, true);
+
+        if Invoiced then begin
+            PurchInvHeader.SetCurrentKey("Order No.");
+            PurchInvHeader.SetRange("Order No.", PurchaseHeader."No.");
+            PurchInvHeader.SetRange("Order No. Series", PurchaseHeader."No. Series");
+            PurchInvHeader.SetRange("Pre-Assigned No.", '');
+            if PurchInvHeader.FindFirst() then
+                SetActionResponse(ActionContext, PurchInvHeader.SystemId, Page::"Posted Purchase Invoice", WebServiceActionResultCode::Deleted)
+            else
+                SetActionResponse(ActionContext, PurchaseHeader.SystemId, Page::"API - Purchase Orders", WebServiceActionResultCode::Updated);
+        end else
+            SetActionResponse(ActionContext, PurchaseHeader.SystemId, Page::"API - Purchase Orders", WebServiceActionResultCode::Updated);
+    end;
+
+    local procedure GetPurchaseHeader(var PurchaseHeader: Record "Purchase Header")
+    begin
+        if not PurchaseHeader.GetBySystemId(Rec.SystemId) then
+            Error('The purchase order could not be found.');
+    end;
+
+    local procedure PostDocument(var PurchaseHeader: Record "Purchase Header"; Receive: Boolean; Invoice: Boolean): Boolean
     var
         LinesInstructionMgt: Codeunit "Lines Instruction Mgt.";
         OrderNo: Code[20];
         OrderNoSeries: Code[20];
+        PurchInvHeader: Record "Purch. Inv. Header";
     begin
         LinesInstructionMgt.PurchaseCheckAllLinesHaveQuantityAssigned(PurchaseHeader);
+
         OrderNo := PurchaseHeader."No.";
         OrderNoSeries := PurchaseHeader."No. Series";
-        PurchaseHeader.Receive := true;
-        PurchaseHeader.Invoice := true;
+
+        PurchaseHeader.Receive := Receive;
+        PurchaseHeader.Invoice := Invoice;
+        PurchaseHeader.Ship := false;
+
         PurchaseHeader.SendToPosting(Codeunit::"Purch.-Post");
-        Commit(); // Purch.-Post does not always commit latest purchase invoice header
+        Commit();
+
+        if not Invoice then
+            exit(false);
+
         PurchInvHeader.SetCurrentKey("Order No.");
         PurchInvHeader.SetRange("Order No.", OrderNo);
         PurchInvHeader.SetRange("Order No. Series", OrderNoSeries);
@@ -326,23 +439,5 @@ page 50055 "API - Purchase Orders"
         ActionContext.SetObjectId(ObjectId);
         ActionContext.AddEntityKey(Rec.FieldNo(SystemId), DocumentId);
         ActionContext.SetResultCode(ResultCode);
-    end;
-
-    [ServiceEnabled]
-    [Caption('Receives all items on the purchase order and creates a posted purchase invoice')]
-    [Scope('Cloud')]
-    procedure ReceiveAndInvoice(var ActionContext: WebServiceActionContext)
-    var
-        PurchaseHeader: Record "Purchase Header";
-        PurchInvHeader: Record "Purch. Inv. Header";
-        PurchInvAggregator: Codeunit "Purch. Inv. Aggregator";
-        Invoiced: Boolean;
-    begin
-        GetOrder(PurchaseHeader);
-        Invoiced := PostInvoice(PurchaseHeader, PurchInvHeader);
-        if Invoiced then
-            SetActionResponse(ActionContext, PurchInvAggregator.GetPurchaseInvoiceHeaderId(PurchInvHeader), Page::"API - Purchase Invoices", WebServiceActionResultCode::Deleted)
-        else
-            SetActionResponse(ActionContext, PurchaseHeader.SystemId, Page::"API - Purchase Orders", WebServiceActionResultCode::Updated);
     end;
 }
