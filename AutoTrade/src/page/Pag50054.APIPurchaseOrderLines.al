@@ -15,7 +15,7 @@ page 50054 "API - Purchase Order Lines"
     ModifyAllowed = true;
     DeleteAllowed = true;
     Editable = true;
-    ODataKeyFields = "Document Type", "Document No.", "Line No.";
+    ODataKeyFields = "SystemId";
 
     layout
     {

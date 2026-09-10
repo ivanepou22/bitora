@@ -15,7 +15,7 @@ page 50064 "API - Purchase Quote Lines"
     ModifyAllowed = true;
     DeleteAllowed = true;
     Editable = true;
-    ODataKeyFields = "Document Type", "Document No.", "Line No.";
+    ODataKeyFields = "SystemId";
 
     layout
     {

@@ -15,7 +15,7 @@ page 50063 "API - Purchase Invoice Lines"
     ModifyAllowed = true;
     DeleteAllowed = true;
     Editable = true;
-    ODataKeyFields = "Document Type", "Document No.", "Line No.";
+    ODataKeyFields = "SystemId";
 
     layout
     {
