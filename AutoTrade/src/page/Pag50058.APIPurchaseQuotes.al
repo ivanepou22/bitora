@@ -251,11 +251,11 @@ page 50058 "API - Purchase Quotes"
                 {
                     Caption = 'Prepmt. Cr. Memo No.';
                 }
-                part(purchaseLines; "API - Purchase Lines")
+                part(purchaseLines; "API - Purchase Quote Lines")
                 {
-                    Caption = 'Purchase Lines';
-                    EntityName = 'purchaseLines';
-                    EntitySetName = 'purchaseLines';
+                    Caption = 'Purchase Quote Lines';
+                    EntityName = 'purchaseQuoteLines';
+                    EntitySetName = 'purchaseQuoteLines';
                     SubPageLink = "Document No." = field("No."), "Document Type" = filter(Quote);
                 }
                 part(pdfDocument; "API - PDF Document")

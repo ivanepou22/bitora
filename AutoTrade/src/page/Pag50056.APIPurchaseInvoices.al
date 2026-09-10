@@ -251,11 +251,11 @@ page 50056 "API - Purchase Invoices"
                 {
                     Caption = 'Location Code';
                 }
-                part(purchaseLines; "API - Purchase Lines")
+                part(purchaseLines; "API - Purchase Invoice Lines")
                 {
-                    Caption = 'Purchase Lines';
-                    EntityName = 'purchaseLines';
-                    EntitySetName = 'purchaseLines';
+                    Caption = 'Purchase Invoice Lines';
+                    EntityName = 'purchaseInvoiceLines';
+                    EntitySetName = 'purchaseInvoiceLines';
                     SubPageLink = "Document No." = field("No."), "Document Type" = filter(Invoice);
                 }
                 part(pdfDocument; "API - PDF Document")

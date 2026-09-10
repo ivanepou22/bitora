@@ -1,13 +1,13 @@
-page 50054 "API - Purchase Lines"
+page 50064 "API - Purchase Quote Lines"
 {
     PageType = API;
     APIPublisher = 'bitora';
     APIGroup = 'bitora';
     APIVersion = 'v1.0';
-    EntityName = 'purchaseLines';
-    EntitySetName = 'purchaseLines';
-    EntityCaption = 'Purchase Line';
-    EntitySetCaption = 'Purchase Lines';
+    EntityName = 'purchaseQuoteLines';
+    EntitySetName = 'purchaseQuoteLines';
+    EntityCaption = 'Purchase Quote Line';
+    EntitySetCaption = 'Purchase Quote Lines';
     SourceTable = "Purchase Line";
     DelayedInsert = true;
     InsertAllowed = true;
@@ -257,6 +257,13 @@ page 50054 "API - Purchase Lines"
                     begin
                         Rec.ValidateShortcutDimCode(8, ShortcutDimCode[8]);
                     end;
+                }
+                part(dimensionSetLines; "API - Dimension Set Lines")
+                {
+                    Caption = 'Dimension Set Lines';
+                    EntityName = 'dimensionSetLine';
+                    EntitySetName = 'dimensionSetLines';
+                    SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Purchase Quote Line");
                 }
             }
         }

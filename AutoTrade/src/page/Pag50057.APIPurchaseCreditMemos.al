@@ -263,11 +263,11 @@ page 50057 "API - Purchase Credit Memos"
                 {
                     Caption = 'Applies-to ID';
                 }
-                part(purchaseLines; "API - Purchase Lines")
+                part(purchaseLines; "API - Purchase Cr.Memo Lines")
                 {
-                    Caption = 'Purchase Lines';
-                    EntityName = 'purchaseLines';
-                    EntitySetName = 'purchaseLines';
+                    Caption = 'Purchase Credit Memo Lines';
+                    EntityName = 'purchaseCreditMemoLines';
+                    EntitySetName = 'purchaseCreditMemoLines';
                     SubPageLink = "Document No." = field("No."), "Document Type" = filter("Credit Memo");
                 }
                 part(pdfDocument; "API - PDF Document")

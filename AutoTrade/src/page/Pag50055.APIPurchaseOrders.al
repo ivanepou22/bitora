@@ -251,11 +251,11 @@ page 50055 "API - Purchase Orders"
                 {
                     Caption = 'Location Code';
                 }
-                part(purchaseLines; "API - Purchase Lines")
+                part(purchaseLines; "API - Purchase Order Lines")
                 {
-                    Caption = 'Purchase Lines';
-                    EntityName = 'purchaseLines';
-                    EntitySetName = 'purchaseLines';
+                    Caption = 'Purchase Order Lines';
+                    EntityName = 'purchaseOrderLines';
+                    EntitySetName = 'purchaseOrderLines';
                     SubPageLink = "Document No." = field("No."), "Document Type" = filter(Order);
                 }
                 part(pdfDocument; "API - PDF Document")
