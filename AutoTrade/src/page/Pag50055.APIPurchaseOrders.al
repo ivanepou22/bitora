@@ -320,14 +320,6 @@ page 50055 "API - Purchase Orders"
     //     exit(PurchInvHeader.FindFirst());
     // end;
 
-    // local procedure SetActionResponse(var ActionContext: WebServiceActionContext; DocumentId: Guid; ObjectId: Integer; ResultCode: WebServiceActionResultCode)
-    // begin
-    //     ActionContext.SetObjectType(ObjectType::Page);
-    //     ActionContext.SetObjectId(ObjectId);
-    //     ActionContext.AddEntityKey(Rec.FieldNo(SystemId), DocumentId);
-    //     ActionContext.SetResultCode(ResultCode);
-    // end;
-
     [ServiceEnabled]
     [Caption('Receives all items on the purchase order')]
     [Scope('Cloud')]

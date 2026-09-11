@@ -189,10 +189,10 @@ page 50036 "API - Sales Invoices"
                 EntitySetName = 'pdfDocument';
                 SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Invoice");
             }
-            part(salesLines; "API - Sales Lines")
+            part(salesLines; "API - Sales Invoice Lines")
             {
-                EntityName = 'salesLine';
-                EntitySetName = 'salesLines';
+                EntityName = 'salesInvoiceLine';
+                EntitySetName = 'salesInvoiceLines';
                 SubPageLink = "Document No." = field("No."), "Document Type" = filter(Invoice);
             }
             part(attachments; "API - Attachments")

@@ -302,4 +302,69 @@ page 50057 "API - Purchase Credit Memos"
             }
         }
     }
+
+    [ServiceEnabled]
+    [Caption('Posts the purchase credit memo and creates a posted purchase credit memo')]
+    [Scope('Cloud')]
+    procedure Post(var ActionContext: WebServiceActionContext)
+    var
+        PurchaseHeader: Record "Purchase Header";
+        PurchCrMemoHdr: Record "Purch. Cr. Memo Hdr.";
+        Posted: Boolean;
+    begin
+        GetPurchaseHeader(PurchaseHeader);
+        Posted := PostCreditMemo(PurchaseHeader, PurchCrMemoHdr);
+
+        if Posted then
+            SetActionResponse(
+                ActionContext,
+                PurchCrMemoHdr.SystemId,
+                Page::"Posted Purchase Credit Memo",   // change if you have a custom API page
+                WebServiceActionResultCode::Deleted)
+        else
+            SetActionResponse(
+                ActionContext,
+                PurchaseHeader.SystemId,
+                Page::"API - Purchase Credit Memos",
+                WebServiceActionResultCode::Updated);
+    end;
+
+    local procedure GetPurchaseHeader(var PurchaseHeader: Record "Purchase Header")
+    begin
+        if not PurchaseHeader.GetBySystemId(Rec.SystemId) then
+            Error('The purchase credit memo could not be found.');
+    end;
+
+    local procedure PostCreditMemo(var PurchaseHeader: Record "Purchase Header"; var PurchCrMemoHdr: Record "Purch. Cr. Memo Hdr."): Boolean
+    var
+        LinesInstructionMgt: Codeunit "Lines Instruction Mgt.";
+        CrMemoNo: Code[20];
+        CrMemoNoSeries: Code[20];
+    begin
+        LinesInstructionMgt.PurchaseCheckAllLinesHaveQuantityAssigned(PurchaseHeader);
+
+        CrMemoNo := PurchaseHeader."No.";
+        CrMemoNoSeries := PurchaseHeader."No. Series";
+
+        // Credit Memo → only Invoice flag is relevant
+        PurchaseHeader.Receive := false;
+        PurchaseHeader.Ship := false;
+        PurchaseHeader.Invoice := true;
+
+        PurchaseHeader.SendToPosting(Codeunit::"Purch.-Post");
+        Commit(); // Purch.-Post does not always commit the latest header
+
+        PurchCrMemoHdr.SetCurrentKey("Pre-Assigned No.");
+        PurchCrMemoHdr.SetRange("Pre-Assigned No.", CrMemoNo);
+        PurchCrMemoHdr.SetRange("Pre-Assigned No. Series", CrMemoNoSeries);
+        exit(PurchCrMemoHdr.FindFirst());
+    end;
+
+    local procedure SetActionResponse(var ActionContext: WebServiceActionContext; DocumentId: Guid; ObjectId: Integer; ResultCode: WebServiceActionResultCode)
+    begin
+        ActionContext.SetObjectType(ObjectType::Page);
+        ActionContext.SetObjectId(ObjectId);
+        ActionContext.AddEntityKey(Rec.FieldNo(SystemId), DocumentId);
+        ActionContext.SetResultCode(ResultCode);
+    end;
 }

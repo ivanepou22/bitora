@@ -8,8 +8,8 @@ page 50039 "API - PostedSales Inv. Lines"
     APIVersion = 'v1.0';
     DelayedInsert = true;
     Caption = 'Sales Invoice Lines';
-    EntityName = 'salesInvoiceLine';
-    EntitySetName = 'salesInvoiceLines';
+    EntityName = 'postedSalesInvoiceLine';
+    EntitySetName = 'postedSalesInvoiceLines';
     SourceTable = "Sales Invoice Line";
     oDataKeyFields = "Document No.", "Line No.";
     Editable = false;

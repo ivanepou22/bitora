@@ -290,4 +290,85 @@ page 50058 "API - Purchase Quotes"
             }
         }
     }
+
+    [ServiceEnabled]
+    [Caption('Converts the purchase quote into a purchase order')]
+    [Scope('Cloud')]
+    procedure MakeOrder(var ActionContext: WebServiceActionContext)
+    var
+        PurchaseHeader: Record "Purchase Header";
+        PurchOrderHeader: Record "Purchase Header";
+        PurchQuoteToOrder: Codeunit "Purch.-Quote to Order";
+    begin
+        GetPurchaseHeader(PurchaseHeader);
+
+        PurchQuoteToOrder.Run(PurchaseHeader);
+        PurchQuoteToOrder.GetPurchOrderHeader(PurchOrderHeader);
+
+        SetActionResponse(
+            ActionContext,
+            PurchOrderHeader.SystemId,
+            Page::"API - Purchase Orders",
+            WebServiceActionResultCode::Deleted);
+    end;
+
+    [ServiceEnabled]
+    [Caption('Converts the purchase quote into a purchase invoice (custom)')]
+    [Scope('Cloud')]
+    procedure MakeInvoice(var ActionContext: WebServiceActionContext)
+    var
+        PurchaseHeader: Record "Purchase Header";
+        PurchInvoiceHeader: Record "Purchase Header";
+    begin
+        GetPurchaseHeader(PurchaseHeader);
+        CreateInvoiceFromQuote(PurchaseHeader, PurchInvoiceHeader);
+
+        SetActionResponse(
+            ActionContext,
+            PurchInvoiceHeader.SystemId,
+            Page::"API - Purchase Invoices",
+            WebServiceActionResultCode::Deleted);
+    end;
+
+    local procedure GetPurchaseHeader(var PurchaseHeader: Record "Purchase Header")
+    begin
+        if not PurchaseHeader.GetBySystemId(Rec.SystemId) then
+            Error('The purchase quote could not be found.');
+    end;
+
+    local procedure CreateInvoiceFromQuote(var QuoteHeader: Record "Purchase Header"; var InvoiceHeader: Record "Purchase Header")
+    var
+        QuoteLine: Record "Purchase Line";
+        InvoiceLine: Record "Purchase Line";
+        NextLineNo: Integer;
+    begin
+        InvoiceHeader.Init();
+        InvoiceHeader."Document Type" := InvoiceHeader."Document Type"::Invoice;
+        InvoiceHeader.TransferFields(QuoteHeader, false);
+        InvoiceHeader."No." := '';
+        InvoiceHeader."Quote No." := QuoteHeader."No.";
+        InvoiceHeader.Insert(true);
+
+        QuoteLine.SetRange("Document Type", QuoteHeader."Document Type");
+        QuoteLine.SetRange("Document No.", QuoteHeader."No.");
+        if QuoteLine.FindSet() then
+            repeat
+                NextLineNo += 10000;
+                InvoiceLine.Init();
+                InvoiceLine.TransferFields(QuoteLine);
+                InvoiceLine."Document Type" := InvoiceLine."Document Type"::Invoice;
+                InvoiceLine."Document No." := InvoiceHeader."No.";
+                InvoiceLine."Line No." := NextLineNo;
+                InvoiceLine.Insert(true);
+            until QuoteLine.Next() = 0;
+        QuoteHeader.Delete(true);
+    end;
+
+    local procedure SetActionResponse(var ActionContext: WebServiceActionContext; DocumentId: Guid; ObjectId: Integer; ResultCode: WebServiceActionResultCode)
+    begin
+        ActionContext.SetObjectType(ObjectType::Page);
+        ActionContext.SetObjectId(ObjectId);
+        ActionContext.AddEntityKey(Rec.FieldNo(SystemId), DocumentId);
+        ActionContext.SetResultCode(ResultCode);
+    end;
 }

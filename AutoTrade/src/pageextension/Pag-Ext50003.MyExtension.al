@@ -1,4 +1,4 @@
-pageextension 50003 MyExtension extends "Posted Purch. Invoice Subform"
+pageextension 50003 MyExtension extends "Purchase Quote"
 {
     layout
     {

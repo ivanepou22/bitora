@@ -1,22 +1,24 @@
-page 50033 "API - Sales Lines"
+page 50067 "API - Sales Invoice Lines"
 {
     PageType = API;
-    EntityCaption = 'Sales Lines';
-    EntitySetCaption = 'Sales Lines';
+    EntityCaption = 'Sales Invoice Lines';
+    EntitySetCaption = 'Sales Invoice Lines';
     APIPublisher = 'bitora';
     APIGroup = 'bitora';
     APIVersion = 'v1.0';
     DelayedInsert = true;
-    Caption = 'Sales Lines';
-    EntityName = 'salesLine';
-    EntitySetName = 'salesLines';
+    Caption = 'Sales Invoice Lines';
+    EntityName = 'salesInvoiceLine';
+    EntitySetName = 'salesInvoiceLines';
     SourceTable = "Sales Line";
-    ODataKeyFields = "Document Type", "Document No.", "Line No.";
+    SourceTableView = where("Document Type" = filter(Invoice));
+    ODataKeyFields = SystemId;
 
     layout
     {
         area(content)
         {
+            field(SystemId; Rec.SystemId) { }
             field(documentType; Rec."Document Type") { }
             field(documentNo; Rec."Document No.") { }
             field(lineNo; Rec."Line No.") { }
@@ -117,6 +119,15 @@ page 50033 "API - Sales Lines"
             field(sellToCustomerNo; Rec."Sell-to Customer No.")
             {
                 Caption = 'Sell-to Customer No.';
+            }
+            field(SystemCreatedAt; Rec.SystemCreatedAt) { }
+            field(SystemModifiedAt; Rec.SystemModifiedAt) { }
+            part(dimensionSetLines; "API - Dimension Set Lines")
+            {
+                Caption = 'Dimension Set Lines';
+                EntityName = 'dimensionSetLine';
+                EntitySetName = 'dimensionSetLines';
+                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Invoice Line");
             }
         }
     }

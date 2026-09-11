@@ -228,7 +228,7 @@ page 50061 "API - Pstd Purchase Cr.M Lines"
                     Caption = 'Dimension Set Lines';
                     EntityName = 'dimensionSetLine';
                     EntitySetName = 'dimensionSetLines';
-                    SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Purchase Invoice Line");
+                    SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Purchase Credit Memo Line");
                 }
             }
         }

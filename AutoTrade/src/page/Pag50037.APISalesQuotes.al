@@ -186,10 +186,10 @@ page 50037 "API - Sales Quotes"
                 EntitySetName = 'pdfDocument';
                 SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Quote");
             }
-            part(salesLines; "API - Sales Lines")
+            part(salesLines; "API - Sales Quote Lines")
             {
-                EntityName = 'salesLine';
-                EntitySetName = 'salesLines';
+                EntityName = 'salesQuoteLine';
+                EntitySetName = 'salesQuoteLines';
                 SubPageLink = "Document No." = field("No."), "Document Type" = filter(Quote);
             }
             part(attachments; "API - Attachments")

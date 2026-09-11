@@ -117,8 +117,8 @@ page 50038 "API - Posted Sales Invoices"
                 }
                 part(lines; "API - PostedSales Inv. Lines")
                 {
-                    EntityName = 'salesInvoiceLine';
-                    EntitySetName = 'salesInvoiceLines';
+                    EntityName = 'postedSalesInvoiceLine';
+                    EntitySetName = 'postedSalesInvoiceLines';
                     SubPageLink = "Document No." = field("No.");
                 }
             }

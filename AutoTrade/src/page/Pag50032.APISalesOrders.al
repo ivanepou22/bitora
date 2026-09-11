@@ -12,12 +12,11 @@ page 50032 "API - Sales Orders"
     EntitySetName = 'salesOrders';
     SourceTable = "Sales Header";
     SourceTableView = where("Document Type" = const(Order));
-    ODataKeyFields = "No.";
+    ODataKeyFields = SystemId;
     layout
     {
         area(content)
         {
-
             field(SystemId; Rec.SystemId) { }
             field(documentType; Rec."Document Type") { }
             field(number; Rec."No.")
@@ -455,10 +454,10 @@ page 50032 "API - Sales Orders"
                 EntitySetName = 'pdfDocument';
                 SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
             }
-            part(salesLines; "API - Sales Lines")
+            part(salesLines; "API - Sales Order Lines")
             {
-                EntityName = 'salesLine';
-                EntitySetName = 'salesLines';
+                EntityName = 'salesOrderLine';
+                EntitySetName = 'salesOrderLines';
                 SubPageLink = "Document No." = field("No."), "Document Type" = filter(Order);
             }
             field(discountAmount; Rec."Invoice Discount Amount")

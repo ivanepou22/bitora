@@ -403,6 +403,12 @@ page 50046 "API - Dimension Set Lines"
             DimensionSetEntryBufferParentType::"Purchase Order Line":
                 if PurchaseLine.GetBySystemId(ParentIdFilter) then
                     exit(PurchaseLine."Dimension Set ID");
+            DimensionSetEntryBufferParentType::"Purchase Quote":
+                if PurchaseHeader.GetBySystemId(ParentIdFilter) then
+                    exit(PurchaseHeader."Dimension Set ID");
+            DimensionSetEntryBufferParentType::"Purchase Quote Line":
+                if PurchaseLine.GetBySystemId(ParentIdFilter) then
+                    exit(PurchaseLine."Dimension Set ID");
             DimensionSetEntryBufferParentType::"Purchase Credit Memo":
                 begin
                     PurchCrMemoEntityBuffer.SetFilter(Id, ParentIdFilter);
@@ -645,6 +651,22 @@ page 50046 "API - Dimension Set Lines"
                     exit;
                 end;
             DimensionSetEntryBufferParentType::"Purchase Order Line":
+                if PurchaseLine.GetBySystemId(ParentIdFilter) then begin
+                    PurchaseLine."Dimension Set ID" := DimensionManagement.GetDimensionSetID(TempDimensionSetEntry);
+                    DimensionManagement.UpdateGlobalDimFromDimSetID(
+                        PurchaseLine."Dimension Set ID", PurchaseLine."Shortcut Dimension 1 Code", PurchaseLine."Shortcut Dimension 2 Code");
+                    PurchaseLine.Modify(true);
+                    exit;
+                end;
+            DimensionSetEntryBufferParentType::"Purchase Quote":
+                if PurchaseHeader.GetBySystemId(ParentIdFilter) then begin
+                    PurchaseHeader."Dimension Set ID" := DimensionManagement.GetDimensionSetID(TempDimensionSetEntry);
+                    DimensionManagement.UpdateGlobalDimFromDimSetID(
+                        PurchaseHeader."Dimension Set ID", PurchaseHeader."Shortcut Dimension 1 Code", PurchaseHeader."Shortcut Dimension 2 Code");
+                    PurchaseHeader.Modify(true);
+                    exit;
+                end;
+            DimensionSetEntryBufferParentType::"Purchase Quote Line":
                 if PurchaseLine.GetBySystemId(ParentIdFilter) then begin
                     PurchaseLine."Dimension Set ID" := DimensionManagement.GetDimensionSetID(TempDimensionSetEntry);
                     DimensionManagement.UpdateGlobalDimFromDimSetID(

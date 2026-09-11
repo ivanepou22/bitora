@@ -267,7 +267,7 @@ page 50065 "API - Purchase Cr.Memo Lines"
                 {
                     ApplicationArea = All;
                 }
-                field(SystemModifiedBy; Rec.SystemModifiedBy)
+                field(SystemModifiedAt; Rec.SystemModifiedAt)
                 {
                     ApplicationArea = All;
                 }
