@@ -12,7 +12,7 @@ page 50036 "API - Sales Invoices"
     EntitySetName = 'salesInvoices';
     SourceTable = "Sales Header";
     SourceTableView = where("Document Type" = const(Invoice));
-    ODataKeyFields = "No.";
+    ODataKeyFields = SystemId;
     layout
     {
         area(content)
@@ -174,6 +174,14 @@ page 50036 "API - Sales Invoices"
             {
                 Caption = 'No. Printed';
             }
+            field(systemCreatedAt; Rec.SystemCreatedAt)
+            {
+                Caption = 'SystemCreatedAt';
+            }
+            field(systemModifiedAt; Rec.SystemModifiedAt)
+            {
+                Caption = 'SystemModifiedAt';
+            }
             part(dimensionSetLines; "API - Dimension Set Lines")
             {
                 Caption = 'Dimension Set Lines';
@@ -218,6 +226,7 @@ page 50036 "API - Sales Invoices"
         Rec.Validate("Document Type");
     end;
 
+
     [ServiceEnabled]
     [Scope('Cloud')]
     procedure GetPdfBase64(): Text
@@ -242,5 +251,72 @@ page 50036 "API - Sales Invoices"
 
         TempBlob.CreateInStream(InS);
         exit(Base64.ToBase64(InS));
+    end;
+
+    [ServiceEnabled]
+    [Scope('Cloud')]
+    procedure Post(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
+    begin
+        GetSalesHeader(SalesHeader);
+        SalesHeader.SendToPosting(Codeunit::"Sales-Post");
+
+        SetActionResponse(ActionContext, SalesHeader);
+    end;
+
+    [ServiceEnabled]
+    [Scope('Cloud')]
+    procedure PostAndSend(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
+        SalesPostAndSend: Codeunit "Sales-Post and Send";
+    begin
+        GetSalesHeader(SalesHeader);
+        SalesPostAndSend.Run(SalesHeader);
+        SetActionResponse(ActionContext, SalesHeader);
+    end;
+
+    [ServiceEnabled]
+    [Scope('Cloud')]
+    procedure Send(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
+        DocumentSendingProfile: Record "Document Sending Profile";
+    begin
+        GetSalesHeader(SalesHeader);
+
+        DocumentSendingProfile.SendCustomerRecords(
+            Enum::"Report Selection Usage"::"S.Invoice".AsInteger(),
+            SalesHeader,
+            SalesHeader."No.",
+            SalesHeader."Bill-to Customer No.",
+            SalesHeader."No.",
+            SalesHeader.FieldNo("Bill-to Customer No."),
+            SalesHeader.FieldNo("No."));
+
+        SetActionResponse(ActionContext, SalesHeader);
+    end;
+
+    local procedure GetSalesHeader(var SalesHeader: Record "Sales Header")
+    begin
+        if not SalesHeader.GetBySystemId(Rec.SystemId) then
+            Error('The sales invoice could not be found.');
+    end;
+
+    local procedure SetActionResponse(var ActionContext: WebServiceActionContext; var SalesHeader: Record "Sales Header")
+    var
+        RemainingSalesHeader: Record "Sales Header";
+    begin
+        ActionContext.SetObjectType(ObjectType::Page);
+        ActionContext.SetObjectId(Page::"API - Sales Invoices");
+
+        if RemainingSalesHeader.GetBySystemId(SalesHeader.SystemId) then begin
+            ActionContext.AddEntityKey(Rec.FieldNo(SystemId), RemainingSalesHeader.SystemId);
+            ActionContext.SetResultCode(WebServiceActionResultCode::Updated);
+        end else begin
+            ActionContext.AddEntityKey(Rec.FieldNo(SystemId), SalesHeader.SystemId);
+            ActionContext.SetResultCode(WebServiceActionResultCode::Deleted);
+        end;
     end;
 }

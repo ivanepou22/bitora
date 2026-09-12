@@ -12,7 +12,7 @@ page 50034 "API - Sales Credit Memos"
     EntitySetName = 'salesCreditMemos';
     SourceTable = "Sales Header";
     SourceTableView = where("Document Type" = const("Credit Memo"));
-    ODataKeyFields = "No.";
+    ODataKeyFields = SystemId;
     layout
     {
         area(content)
@@ -178,6 +178,14 @@ page 50034 "API - Sales Credit Memos"
             field(noPrinted; Rec."No. Printed")
             {
                 Caption = 'No. Printed';
+            }
+            field(systemCreatedAt; Rec.SystemCreatedAt)
+            {
+                Caption = 'SystemCreatedAt';
+            }
+            field(systemModifiedAt; Rec.SystemModifiedAt)
+            {
+                Caption = 'SystemModifiedAt';
             }
             part(dimensionSetLines; "API - Dimension Set Lines")
             {

@@ -1,4 +1,4 @@
-pageextension 50003 MyExtension extends "Purchase Quote"
+pageextension 50003 MyExtension extends "Sales Order"
 {
     layout
     {

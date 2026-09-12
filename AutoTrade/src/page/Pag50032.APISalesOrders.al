@@ -35,7 +35,6 @@ page 50032 "API - Sales Orders"
                 trigger OnValidate()
                 begin
                     Rec.SelltoCustomerNoOnAfterValidate(Rec, xRec);
-                    // CurrPage.Update();
                     if SellToCustomer."No." <> '' then begin
                         if SellToCustomer."No." <> Rec."Sell-to Customer No." then
                             Error(SellToCustomerValuesDontMatchErr);
@@ -439,27 +438,6 @@ page 50032 "API - Sales Orders"
             {
                 Caption = 'Sell-to Customer Name 2';
             }
-            part(dimensionSetLines; "API - Dimension Set Lines")
-            {
-                Caption = 'Dimension Set Lines';
-                EntityName = 'dimensionSetLine';
-                EntitySetName = 'dimensionSetLines';
-                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
-            }
-            part(pdfDocument; "API - PDF Document")
-            {
-                Caption = 'PDF Document';
-                Multiplicity = ZeroOrOne;
-                EntityName = 'pdfDocument';
-                EntitySetName = 'pdfDocument';
-                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
-            }
-            part(salesLines; "API - Sales Order Lines")
-            {
-                EntityName = 'salesOrderLine';
-                EntitySetName = 'salesOrderLines';
-                SubPageLink = "Document No." = field("No."), "Document Type" = filter(Order);
-            }
             field(discountAmount; Rec."Invoice Discount Amount")
             {
                 Caption = 'Discount Amount';
@@ -517,6 +495,27 @@ page 50032 "API - Sales Orders"
                 begin
                     RegisterFieldSet(Rec.FieldNo("Sell-to E-Mail"));
                 end;
+            }
+            part(dimensionSetLines; "API - Dimension Set Lines")
+            {
+                Caption = 'Dimension Set Lines';
+                EntityName = 'dimensionSetLine';
+                EntitySetName = 'dimensionSetLines';
+                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Order");
+            }
+            part(pdfDocument; "API - PDF Document")
+            {
+                Caption = 'PDF Document';
+                Multiplicity = ZeroOrOne;
+                EntityName = 'pdfDocument';
+                EntitySetName = 'pdfDocument';
+                SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Order");
+            }
+            part(salesLines; "API - Sales Order Lines")
+            {
+                EntityName = 'salesOrderLine';
+                EntitySetName = 'salesOrderLines';
+                SubPageLink = "Document No." = field("No."), "Document Type" = filter(Order);
             }
             part(attachments; "API - Attachments")
             {

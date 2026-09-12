@@ -12,7 +12,7 @@ page 50037 "API - Sales Quotes"
     EntitySetName = 'salesQuotes';
     SourceTable = "Sales Header";
     SourceTableView = where("Document Type" = const(Quote));
-    ODataKeyFields = "No.";
+    ODataKeyFields = SystemId;
     layout
     {
         area(content)
@@ -171,6 +171,14 @@ page 50037 "API - Sales Quotes"
             {
                 Caption = 'No. Printed';
             }
+            field(systemCreatedAt; Rec.SystemCreatedAt)
+            {
+                Caption = 'SystemCreatedAt';
+            }
+            field(systemModifiedAt; Rec.SystemModifiedAt)
+            {
+                Caption = 'SystemModifiedAt';
+            }
             part(dimensionSetLines; "API - Dimension Set Lines")
             {
                 Caption = 'Dimension Set Lines';
@@ -186,7 +194,7 @@ page 50037 "API - Sales Quotes"
                 EntitySetName = 'pdfDocument';
                 SubPageLink = "Document Id" = field(SystemId), "Document Type" = const("Sales Quote");
             }
-            part(salesLines; "API - Sales Quote Lines")
+            part(salesQuoteLines; "API - Sales Quote Lines")
             {
                 EntityName = 'salesQuoteLine';
                 EntitySetName = 'salesQuoteLines';
