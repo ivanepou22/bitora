@@ -18,6 +18,10 @@ page 50035 "API - Sales Credit Memo Lines"
     {
         area(content)
         {
+            field(SystemId; Rec.SystemId)
+            {
+                ApplicationArea = All;
+            }
             field(documentType; Rec."Document Type") { }
             field(documentNo; Rec."Document No.") { }
             field(lineNo; Rec."Line No.") { }
