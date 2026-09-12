@@ -12,7 +12,7 @@ page 50035 "API - Sales Credit Memo Lines"
     EntitySetName = 'salesCreditMemoLines';
     SourceTable = "Sales Line";
     SourceTableView = where("Document Type" = const("Credit Memo"));
-    ODataKeyFields = "Document Type", "Document No.", "Line No.";
+    ODataKeyFields = SystemId;
 
     layout
     {
@@ -87,6 +87,10 @@ page 50035 "API - Sales Credit Memo Lines"
             {
                 Caption = 'Shortcut Dimension 1 Code';
             }
+            field(shortcutDimension2Code; Rec."Shortcut Dimension 2 Code")
+            {
+                Caption = 'Shortcut Dimension 2 Code';
+            }
             field(dimensionSetID; Rec."Dimension Set ID")
             {
                 Caption = 'Dimension Set ID';
@@ -111,9 +115,14 @@ page 50035 "API - Sales Credit Memo Lines"
             {
                 Caption = 'Sell-to Customer No.';
             }
-            field(shortcutDimension2Code; Rec."Shortcut Dimension 2 Code")
+            field(SystemCreatedAt; Rec.SystemCreatedAt) { }
+            field(SystemModifiedAt; Rec.SystemModifiedAt) { }
+            part(dimensionSetLines; "API - Dimension Set Lines")
             {
-                Caption = 'Shortcut Dimension 2 Code';
+                Caption = 'Dimension Set Lines';
+                EntityName = 'dimensionSetLine';
+                EntitySetName = 'dimensionSetLines';
+                SubPageLink = "Parent Id" = field(SystemId), "Parent Type" = const("Sales Credit Memo Line");
             }
         }
     }

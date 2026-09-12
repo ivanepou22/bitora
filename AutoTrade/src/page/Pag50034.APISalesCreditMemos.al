@@ -256,4 +256,93 @@ page 50034 "API - Sales Credit Memos"
         TempBlob.CreateInStream(InS);
         exit(Base64.ToBase64(InS));
     end;
+
+    [ServiceEnabled]
+    [Scope('Cloud')]
+    procedure Post(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
+        SalesCrMemoHeader: Record "Sales Cr.Memo Header";
+        FullyPosted: Boolean;
+    begin
+        SalesHeader := Rec;
+        FullyPosted := PostCreditMemo(SalesHeader, SalesCrMemoHeader);
+
+        if FullyPosted then
+            SetActionResponse(ActionContext, SalesCrMemoHeader.SystemId, WebServiceActionResultCode::Deleted)
+        else
+            SetActionResponse(ActionContext, SalesHeader.SystemId, WebServiceActionResultCode::Updated);
+    end;
+
+    [ServiceEnabled]
+    [Scope('Cloud')]
+    procedure PostAndSend(var ActionContext: WebServiceActionContext)
+    var
+        SalesHeader: Record "Sales Header";
+        SalesCrMemoHeader: Record "Sales Cr.Memo Header";
+        FullyPosted: Boolean;
+    begin
+        SalesHeader := Rec;
+        FullyPosted := PostCreditMemo(SalesHeader, SalesCrMemoHeader);
+        Commit();
+
+        if SalesCrMemoHeader."No." <> '' then
+            SalesCrMemoHeader.SendRecords();
+
+        if FullyPosted then
+            SetActionResponse(ActionContext, SalesCrMemoHeader.SystemId, WebServiceActionResultCode::Deleted)
+        else
+            SetActionResponse(ActionContext, SalesHeader.SystemId, WebServiceActionResultCode::Updated);
+    end;
+
+    local procedure PostCreditMemo(var SalesHeader: Record "Sales Header"; var SalesCrMemoHeader: Record "Sales Cr.Memo Header"): Boolean
+    var
+        SalesLine: Record "Sales Line";
+        LinesInstructionMgt: Codeunit "Lines Instruction Mgt.";
+        PreAssignedNo: Code[20];
+        HasQtyToPost: Boolean;
+    begin
+        if not SalesHeader.SalesLinesExist() then
+            Error('There are no sales lines to post.');
+
+        // Allow partials: only require that at least one line has a quantity to post
+        SalesLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesLine.SetRange("Document No.", SalesHeader."No.");
+        SalesLine.SetFilter(Type, '<>%1', SalesLine.Type::" ");
+        if SalesLine.FindSet() then
+            repeat
+                if (SalesLine."Qty. to Invoice" <> 0) then
+                    HasQtyToPost := true;
+            until (SalesLine.Next() = 0) or HasQtyToPost;
+
+        if not HasQtyToPost then
+            Error('There is nothing to post. Set Qty. to Invoice / Qty. to Receive on at least one line.');
+
+        // Standard check still useful for lines that *are* being posted
+        LinesInstructionMgt.SalesCheckAllLinesHaveQuantityAssigned(SalesHeader);
+
+        PreAssignedNo := SalesHeader."No.";
+
+        // Credit memo posts as Receive + Invoice (respects the qty. to fields on the lines)
+        SalesHeader.Receive := true;
+        SalesHeader.Invoice := true;
+        SalesHeader.SendToPosting(Codeunit::"Sales-Post");
+
+        // Find the posted credit memo that was just created (if any quantity was invoiced)
+        Clear(SalesCrMemoHeader);
+        SalesCrMemoHeader.SetCurrentKey("Pre-Assigned No.");
+        SalesCrMemoHeader.SetRange("Pre-Assigned No.", PreAssignedNo);
+        if SalesCrMemoHeader.FindFirst() then;
+
+        // Fully posted when the draft header no longer exists
+        exit(not SalesHeader.Get(SalesHeader."Document Type"::"Credit Memo", PreAssignedNo));
+    end;
+
+    local procedure SetActionResponse(var ActionContext: WebServiceActionContext; DocumentId: Guid; ResultCode: WebServiceActionResultCode)
+    begin
+        ActionContext.SetObjectType(ObjectType::Page);
+        ActionContext.SetObjectId(Page::"API - Sales Credit Memos");
+        ActionContext.AddEntityKey(Rec.FieldNo(SystemId), DocumentId);
+        ActionContext.SetResultCode(ResultCode);
+    end;
 }

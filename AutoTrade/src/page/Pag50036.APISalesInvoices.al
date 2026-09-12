@@ -270,10 +270,24 @@ page 50036 "API - Sales Invoices"
     procedure PostAndSend(var ActionContext: WebServiceActionContext)
     var
         SalesHeader: Record "Sales Header";
-        SalesPostAndSend: Codeunit "Sales-Post and Send";
+        DocumentSendingProfile: Record "Document Sending Profile";
+        SalesInvoiceHeader: Record "Sales Invoice Header";
     begin
         GetSalesHeader(SalesHeader);
-        SalesPostAndSend.Run(SalesHeader);
+        SalesHeader.SendToPosting(Codeunit::"Sales-Post");
+        if not SalesHeader.GetBySystemId(SalesHeader.SystemId) then begin
+            SalesInvoiceHeader.SetRange("Pre-Assigned No.", SalesHeader."No.");
+            if SalesInvoiceHeader.FindFirst() then
+                DocumentSendingProfile.SendCustomerRecords(
+                    Enum::"Report Selection Usage"::"S.Invoice".AsInteger(),
+                    SalesInvoiceHeader,
+                    SalesInvoiceHeader."No.",
+                    SalesInvoiceHeader."Bill-to Customer No.",
+                    SalesInvoiceHeader."No.",
+                    SalesInvoiceHeader.FieldNo("Bill-to Customer No."),
+                    SalesInvoiceHeader.FieldNo("No."));
+        end;
+
         SetActionResponse(ActionContext, SalesHeader);
     end;
 
