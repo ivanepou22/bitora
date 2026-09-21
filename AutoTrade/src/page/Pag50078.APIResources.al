@@ -177,6 +177,13 @@ page 50078 "API - Resources"
                 {
                     Caption = 'SystemModifiedAt';
                 }
+                part(defaultDimensions; "API - Default Dimensions")
+                {
+                    Caption = 'Default Dimensions';
+                    EntityName = 'defaultDimension';
+                    EntitySetName = 'defaultDimensions';
+                    SubPageLink = ParentId = field(SystemId);
+                }
             }
         }
     }
